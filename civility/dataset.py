@@ -49,4 +49,18 @@ class CivilCommentsDataset:
 
             return data
         else:
-            return tf.data.experimental.load(str(self.data_path / split))
+            if split == "test":
+                spec_shape = 390
+            else:
+                spec_shape = 512
+
+            return tf.data.experimental.load(
+                str(self.data_path / split),
+                element_spec=(
+                    {
+                        "attention_mask": tf.TensorSpec(shape=(spec_shape,), dtype=tf.int32, name=None),
+                        "input_ids": tf.TensorSpec(shape=(spec_shape,), dtype=tf.int32, name=None)
+                    },
+                    tf.TensorSpec(shape=(1,), dtype=tf.float32, name=None)
+                )
+            )
