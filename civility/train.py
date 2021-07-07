@@ -7,4 +7,4 @@ if __name__ == "__main__":
         epochs=5,
         batch_size=100
     )
-    civility_model.model.save("civility_model2")
+    civility_model.model.save("civility_model_final")
