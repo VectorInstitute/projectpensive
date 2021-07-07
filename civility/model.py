@@ -38,13 +38,26 @@ class CivilityModel:
     def train(self, epochs, batch_size=32):
 
         print("Beginning train...")
-        history = self.model.fit(
-            self.dataset.train_data,
-            epochs=epochs,
-            batch_size=batch_size,
-            validation_data=self.dataset.val_data,
-            callbacks=[self.model_checkpoint_callback]
-        )
+        gpus = tf.config.list_physical_devices('GPU')
+
+        if gpus:
+            with tf.device(gpus[0]):
+                history = self.model.fit(
+                    self.dataset.train_data,
+                    epochs=epochs,
+                    batch_size=batch_size,
+                    validation_data=self.dataset.val_data,
+                    callbacks=[self.model_checkpoint_callback]
+                )
+        else:
+            history = self.model.fit(
+                self.dataset.train_data,
+                epochs=epochs,
+                batch_size=batch_size,
+                validation_data=self.dataset.val_data,
+                callbacks=[self.model_checkpoint_callback]
+            )
+
         return history
 
     def test(self, batch_size=32):
