@@ -13,9 +13,8 @@
 
 . /etc/profile.d/lmod.sh
 
-echo Activating baiso_env
-module load vector_nlp_project
-source baiso_env/bin/activate
+echo Activating conda environment
+source activate baiso_conda
 
 echo Starting model train
 python train.py
