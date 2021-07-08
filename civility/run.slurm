@@ -8,12 +8,13 @@
 #SBATCH --qos=normal
 #SBATCH --export=ALL
 #SBATCH --output=%x.%j.log
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 
 
 . /etc/profile.d/lmod.sh
 
 echo Activating baiso_env
+module load vector_nlp_project
 source baiso_env/bin/activate
 
 echo Starting model train

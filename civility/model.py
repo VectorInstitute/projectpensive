@@ -9,7 +9,7 @@ class CivilityModel:
     Trains a civility classifier model, leveraging Hugging Face and TensorFlow.
     """
 
-    def __init__(self, num_labels=7):
+    def __init__(self, num_labels=7, multi_gpu=False):
 
         """
         num_labels: Number of units in final dense layer of network. Defaults to 7 for the 7 categories of
@@ -18,14 +18,24 @@ class CivilityModel:
 
         # Define model and dataset
         self.dataset = CivilCommentsDataset()
-        self.model = TFDistilBertForSequenceClassification.from_pretrained(
-            'distilbert-base-uncased',
-            num_labels=num_labels
-        )
+
+        if multi_gpu:
+            strategy = tf.distribute.MirroredStrategy()
+            with strategy.scope():
+                self.model = TFDistilBertForSequenceClassification.from_pretrained(
+                    'distilbert-base-uncased',
+                    num_labels=num_labels
+                )
+        else:
+            self.model = TFDistilBertForSequenceClassification.from_pretrained(
+                'distilbert-base-uncased',
+                num_labels=num_labels
+            )
+
         self.model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
             filepath="civility_model",
             save_weights_only=False,
-            monitor='val_accuracy',
+            monitor='accuracy',
             mode='max',
             save_best_only=True
         )
@@ -38,26 +48,18 @@ class CivilityModel:
     def train(self, epochs, batch_size=32):
 
         print("Beginning train...")
-        gpus = tf.config.list_physical_devices('GPU')
 
-        if gpus:
-            with tf.device(gpus[0]):
-                history = self.model.fit(
-                    self.dataset.train_data,
-                    epochs=epochs,
-                    batch_size=batch_size,
-                    validation_data=self.dataset.val_data,
-                    callbacks=[self.model_checkpoint_callback]
-                )
-        else:
-            history = self.model.fit(
-                self.dataset.train_data,
-                epochs=epochs,
-                batch_size=batch_size,
-                validation_data=self.dataset.val_data,
-                callbacks=[self.model_checkpoint_callback]
-            )
-
+        history = self.model.fit(
+            # temp changed to get model for demo
+            #self.dataset.train_data,
+            self.dataset.val_data,
+            epochs=epochs,
+            batch_size=batch_size,
+            # temp changed to get model for demo
+            #validation_data=self.dataset.val_data,
+            validation_data=self.dataset.test_data,
+            callbacks=[self.model_checkpoint_callback]
+        )
         return history
 
     def test(self, batch_size=32):
@@ -68,5 +70,10 @@ class CivilityModel:
            batch_size=batch_size
         )
 
-    def predict(self, x):
-        return self.model.predict(x)
+    def predict(self, x, x_tokenized):
+
+        if x_tokenized:
+            return self.model.predict(x)
+        else:
+            x_token = self.dataset.tokenizer(x, truncation=True, padding=True)
+            return self.model.predict(x_token)
