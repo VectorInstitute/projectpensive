@@ -35,10 +35,11 @@ def problem_framing():
         value=5,
         step=1
     )
-    dataset = load_dataset("civil_comments")
-    random_sampling = np.random.randint(0, 1000, sample_size)
-    df = pd.DataFrame(
-        dataset["test"][random_sampling]
-    )
-    df["text"] = df["text"].apply(shorten)
-    st.table(df)
+    with st.spinner("Loading data..."):
+        dataset = load_dataset("civil_comments")
+        random_sampling = np.random.randint(0, 1000, sample_size)
+        df = pd.DataFrame(
+            dataset["test"][random_sampling]
+        )
+        df["text"] = df["text"].apply(shorten)
+        st.table(df)

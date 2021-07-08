@@ -14,7 +14,9 @@ st.write(
     "The goal of Project Pensive is to build content conscious Recommender Systems."
 )
 
-# Table of contents
+# Sidebar
+st.sidebar.header("Vector Institute: AI Engineering and Technology")
+st.sidebar.image("images/vector_logo.jpeg", width=300)
 sidebar = st.sidebar.selectbox(
     "Demo Section",
     ("Introduction", "Problem Framing", "Tools Explored", "Civility Classifier")
