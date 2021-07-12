@@ -20,9 +20,9 @@ class CivilCommentsModel:
             assert num_training_points <= len(self.dataset["train"]["text"])
         encodings, labels = self.build_data_split("train", num_training_points)
         self.train_dataset = CivilCommentsDataset(encodings, labels)
-        encodings, labels = self.build_data_split("validation", 2000)
+        encodings, labels = self.build_data_split("validation")
         self.val_dataset = CivilCommentsDataset(encodings, labels)
-        encodings, labels = self.build_data_split("validation", 2000)
+        encodings, labels = self.build_data_split("validation")
         self.test_dataset = CivilCommentsDataset(encodings, labels)
 
         # Building model and freezing layers of base
