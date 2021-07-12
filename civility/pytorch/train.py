@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument(
         "-t",
         "--num-train-points",
-        default=50000,
+        default=500000,
         help="Number of data points to grab from training split"
     )
     parsed = parser.parse_args()
