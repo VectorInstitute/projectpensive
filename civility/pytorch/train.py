@@ -21,7 +21,6 @@ def parse_args():
     parser.add_argument(
         "-t",
         "--num-train-points",
-        type=int,
         default=50000,
         help="Number of data points to grab from training split"
     )
@@ -32,11 +31,18 @@ def parse_args():
 if __name__ == "__main__":
 
     args = parse_args()
-    model = CivilCommentsModel(
-        num_train_epochs=args.num_train_epochs,
-        steps_per_eval=args.steps_per_eval,
-        num_training_points=args.num_train_points
-    )
+    if args.num_train_points == "all":
+        model = CivilCommentsModel(
+            num_train_epochs=args.num_train_epochs,
+            steps_per_eval=args.steps_per_eval,
+        )
+    else:
+        model = CivilCommentsModel(
+            num_train_epochs=args.num_train_epochs,
+            steps_per_eval=args.steps_per_eval,
+            num_training_points=int(args.num_train_points)
+        )
+
     model.trainer.train()
     model.trainer.evaluate()
     model.trainer.save_model()
