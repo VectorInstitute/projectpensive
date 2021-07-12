@@ -25,11 +25,13 @@ class CivilCommentsModel:
         encodings, labels = self.build_data_split("validation", 2000)
         self.test_dataset = CivilCommentsDataset(encodings, labels)
 
-        # Building model
+        # Building model and freezing layers of base
         self.model = DistilBertForSequenceClassification.from_pretrained(
             'distilbert-base-uncased',
             num_labels=1
         )
+        for param in self.model.base_model.parameters():
+            param.requires_grad = False
 
         # Building trainer
         self.training_args = TrainingArguments(
