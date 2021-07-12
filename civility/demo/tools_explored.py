@@ -78,7 +78,7 @@ def tools_explored():
     # Showing Hugging Face
     st.header("Hugging Face")
     st.write(
-        "Hugging Face is a Transformers library that can help solve several NLP problems, including ASR, text "
+        "Hugging Face is a Transformers library that can solve several NLP problems, including ASR, text "
         "classification, NER, question answering, etc. Along with the library comes a ton of pretrained models and "
         "datasets."
     )
@@ -95,10 +95,10 @@ def tools_explored():
     # Showing Recommender Systems
     st.header("Recommender Systems and Tensorflow Recommenders")
     st.write(
-        "Some work has been done with the Tensorflow Recommenders package. I have got some experience working with "
-        "embeddings and building recommender systems with movies/twitter data."
+        "Some work has been done with the Tensorflow Recommenders package. I have acquired some experience working "
+        "with embeddings and building recommender systems for movies/twitter data."
     )
-    st.write("In the coming days, I will be building a recommender engine on reddit data.")
+    st.write("In the coming days, I will be building a recommender engine leveraging reddit data.")
     st.image("images/matrix_factorization.webp")
 
     # Showing others

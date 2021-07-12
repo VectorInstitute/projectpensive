@@ -10,8 +10,7 @@ def introduction():
     )
     st.write(
         "We envision a platform where the user is provided with several optional filters they can apply to their "
-        "feeds. Two such filters revolve around civility and diversity. Although this is somewhat implemented in "
-        "current mainstream platforms, these implementations can be extended, and are not open-source."
+        "feeds. Two such filters are based on civility and diversity."
     )
     st.write(
         "My work focuses on the civility aspect of Project Pensive. Several approaches are taken to provide insight on "
