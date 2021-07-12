@@ -17,4 +17,4 @@ echo Activating conda environment
 source /scratch/ssd002/datasets/cv_project/baiso_env/bin/activate
 
 echo Starting model train
-python train.py
+python train.py -t all
