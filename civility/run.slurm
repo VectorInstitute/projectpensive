@@ -7,14 +7,14 @@
 #SBATCH --partition=t4v1,p100,t4v2,rtx6000
 #SBATCH --qos=normal
 #SBATCH --export=ALL
-#SBATCH --output=%x.%j.log
-#SBATCH --gres=gpu:4
+#SBATCH --output=output.log
+#SBATCH --gres=gpu:2
 
 
 . /etc/profile.d/lmod.sh
 
 echo Activating conda environment
-source activate baiso_conda
+source /scratch/ssd002/datasets/cv_project/baiso_env/bin/activate
 
 echo Starting model train
 python train.py
