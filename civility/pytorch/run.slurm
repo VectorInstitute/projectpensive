@@ -8,7 +8,7 @@
 #SBATCH --qos=normal
 #SBATCH --export=ALL
 #SBATCH --output=output.log
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 
 
 . /etc/profile.d/lmod.sh
