@@ -9,7 +9,7 @@ class CivilityModel:
     Trains a civility classifier model, leveraging Hugging Face and TensorFlow.
     """
 
-    def __init__(self, num_labels=7, multi_gpu=False):
+    def __init__(self, num_labels=7):
 
         """
         num_labels: Number of units in final dense layer of network. Defaults to 7 for the 7 categories of
@@ -19,7 +19,7 @@ class CivilityModel:
         # Define model and dataset
         self.dataset = CivilCommentsDataset()
 
-        if multi_gpu:
+        if len(tf.config.list_physical_devices("GPU")) > 1:
             strategy = tf.distribute.MirroredStrategy()
             with strategy.scope():
                 self.model = TFDistilBertForSequenceClassification.from_pretrained(
