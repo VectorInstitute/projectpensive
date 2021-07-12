@@ -13,13 +13,13 @@ class CivilCommentsDataset:
     def __init__(self):
 
         print("Building dataset...")
-        # Load dataset and tokenizer
-        self.dataset = load_dataset("civil_comments")
+        # Load tokenizer
         self.tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
+        self.dataset = None
 
         self.data_path = pathlib.Path("data")
 
-        # Build data sets
+        # Load/build data sets
         self.train_data = self.load_or_generate_tf_dataset("train")
         self.val_data = self.load_or_generate_tf_dataset("validation")
         self.test_data = self.load_or_generate_tf_dataset("test")
@@ -30,6 +30,8 @@ class CivilCommentsDataset:
         """
 
         if not pathlib.Path.exists(self.data_path / split):
+            if self.dataset is None:
+                self.dataset = load_dataset("civil_comments")
 
             print(f"Building {split} data...")
 
