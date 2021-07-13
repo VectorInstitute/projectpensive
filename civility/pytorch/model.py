@@ -53,7 +53,7 @@ class CivilCommentsModel:
             compute_metrics=self.compute_metrics,
         )
 
-    def build_data_split(self, split, num_data_points):
+    def build_data_split(self, split, num_data_points="all"):
         print(f"Generating {num_data_points} data points for {split} split...", end="", flush=True)
         if num_data_points == "all":
             encodings = self.tokenizer(self.dataset[split]["text"], truncation=True, padding=True)
