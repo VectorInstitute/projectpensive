@@ -10,7 +10,7 @@ class CivilCommentsModel:
     Trains distil-bert Hugging Face model on the `civil_comments` dataset
     """
 
-    def __init__(self, num_train_epochs, steps_per_eval, num_training_points="all"):
+    def __init__(self, num_train_epochs, num_training_points="all"):
         # Loading tokenizer and dataset
         self.tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
         self.dataset = load_dataset("civil_comments")
@@ -38,12 +38,12 @@ class CivilCommentsModel:
             output_dir='./results',
             num_train_epochs=num_train_epochs,
             per_device_train_batch_size=256,
-            per_device_eval_batch_size=64,
+            per_device_eval_batch_size=256,
             warmup_steps=500,
             weight_decay=0.01,
             logging_dir='./logs',
-            evaluation_strategy="steps",
-            eval_steps=steps_per_eval
+            evaluation_strategy="epoch",
+            load_best_model_at_end=True
         )
         self.trainer = Trainer(
             model=self.model,
@@ -67,5 +67,12 @@ class CivilCommentsModel:
     @staticmethod
     def compute_metrics(model_output):
         pred, label = model_output
+        pred = np.array(pred)
+        label = np.array(label)
+
         mse = np.mean(np.square(pred - label))
-        return {"MSE": mse}
+        acc = np.mean((pred > 0.5) == (label > 0.5))
+        return {
+            "MSE": mse,
+            "Threshold Accuracy": acc
+        }
