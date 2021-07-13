@@ -44,7 +44,10 @@ if __name__ == "__main__":
         )
 
     model.trainer.train()
-    model.trainer.evaluate()
+    model.trainer.evaluate(
+        eval_dataset=model.test_dataset,
+        compute_metrics=model.compute_metrics
+    )
     model.trainer.save_model()
 
     print("Program training complete")
