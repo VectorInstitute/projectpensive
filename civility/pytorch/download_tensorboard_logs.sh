@@ -1,0 +1,3 @@
+echo Downloading tensorboard logs from remote server...
+scp -r mnas@v.vectorinstitute.ai:baiso/baiso/civility/pytorch/logs logs
+scp mnas@v.vectorinstitute.ai:baiso/baiso/civility/pytorch/output.log logs/output.log
