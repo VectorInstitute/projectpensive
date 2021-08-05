@@ -27,7 +27,12 @@ class RecommenderEngine(torch.nn.Module):
         for _, param in self.bert.named_parameters():
             param.requires_grad = False
 
-        self.text_embedding = torch.nn.Linear(self.bert_output_dim, len(self.author_lookup) * self.n_factors)
+        #self.text_embedding = torch.nn.Linear(self.bert_output_dim, len(self.author_lookup) * self.n_factors)
+        self.text_lookup = {comment: i for i, comment in enumerate(self.data.comment.unique())}
+        self.text_embedding = torch.nn.Embedding(
+            4,
+            n_factors,
+        )
 
     def forward(self, author, comment):
 
@@ -38,14 +43,18 @@ class RecommenderEngine(torch.nn.Module):
 
         # Comment pre-processing
         tokenized = [self.tokenizer(c, return_tensors="pt") for c in comment]
-        bert_rep = [self.bert(**t) for t in tokenized]
+        bert_rep = [self.bert(**t.to(self.device)) for t in tokenized]
         bert_out = [b.last_hidden_state[0] for b in bert_rep]
         bert_mean = [torch.mean(bo, dim=0) for bo in bert_out]
         bert_stack = torch.stack(bert_mean)
 
         # Matmul
         author_rep = self.author_embedding(author)
-        comment_rep = self.text_embedding(bert_stack)
+        """comment_rep = self.text_embedding(bert_stack)
         comment_rep = comment_rep.view(-1, len(self.author_lookup), self.n_factors)
+        comment_rep_transpose = torch.transpose(comment_rep, 1, 2)"""
+        comment = [self.text_lookup[i] for i in comment]
+        comment = torch.nn.functional.one_hot(torch.Tensor(comment).long(), num_classes=len(self.text_lookup))
+        comment_rep = self.text_embedding(comment)
         comment_rep_transpose = torch.transpose(comment_rep, 1, 2)
         return torch.matmul(author_rep, comment_rep_transpose).mean([1, 2])
