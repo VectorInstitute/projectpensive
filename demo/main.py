@@ -7,9 +7,15 @@ from evaluation import evaluation
 from failed_attempts import failed_attempts
 from next_steps import next_steps
 
+st.set_page_config(page_title="Project Pensive",
+                       page_icon="images/vertical_logo.jpg",
+                       layout='wide',
+                       initial_sidebar_state='expanded')
 
 # Main header
-st.title("Project Pensive")
+col1, col2, col3, col4 = st.columns([2, 1, 0.1, 2])  
+col2.title("Project Pensive")
+col3.markdown(":thought_balloon:")
 
 # Brief description of project
 st.write(
@@ -23,7 +29,6 @@ st.write(
 
 # Sidebar
 st.sidebar.header("Vector Institute: AI Engineering and Technology")
-st.sidebar.image("images/vector_logo.jpeg", width=300)
 sidebar = st.sidebar.selectbox(
     "Demo Section",
     ("Problem Framing", "Demo", "Design", "Evaluation", "Failed Attempts", "Next Steps")
@@ -41,3 +46,6 @@ elif sidebar == "Failed Attempts":
     failed_attempts()
 elif sidebar == "Next Steps":
     next_steps()
+
+col1, col2, col3 = st.columns([1, 1, 1])    
+col1.image("images/horizontal_logo.jpg")
