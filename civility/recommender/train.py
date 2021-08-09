@@ -7,10 +7,23 @@ from model import RecommenderEngine
 
 
 if __name__ == "__main__":
+    """
+    Trains Recommender Engine on reddit dataset.
+    Dataset: https://www.kaggle.com/sherinclaudia/sarcastic-comments-on-reddit
+    """
 
     # Load Data
-    data = pd.read_csv("train-balanced-sarcasm-small.csv")
-    data = data.drop(["label", "date", "created_utc", "parent_comment"], 1)
+    data = pd.read_csv("train-balanced-sarcasm.csv")
+    data = data.drop(["label", "score", "ups", "downs", "date", "created_utc", "parent_comment"], 1)
+
+    # Preprocess data, removing data points where author does not make more than one comment
+    ids_to_drop = []
+    author_value_counts = data.author.value_counts() > 1
+    for author, condition in author_value_counts.items():
+        if not condition:
+            ids_to_drop += data.index[data["author"] == author].tolist()
+    data = data.drop(ids_to_drop)
+    data = data.reset_index(drop=True)
 
     # Note that batch_size is essentially doubled to include a negative pair
     batch_size = 32
@@ -50,7 +63,7 @@ if __name__ == "__main__":
 
             # Compute and track metrics
             metrics = precision_recall_fscore_support(
-                prediction.data > 0.5, batch["match_score"], warn_for=tuple()
+                prediction.data.cpu() > 0.5, batch["match_score"].cpu(), warn_for=tuple()
             )
 
             losses.append(loss)
