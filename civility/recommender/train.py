@@ -34,7 +34,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # Define model
-    model = RecommenderEngine(data, n_factors=150, device=device)
+    model = RecommenderEngine(data, n_factors=1000, device=device)
     loss_fn = torch.nn.BCEWithLogitsLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
@@ -46,7 +46,14 @@ if __name__ == "__main__":
         f1s = []
         precisions = []
         recalls = []
-        for b, batch in enumerate(data_loader):
+
+        data_loader_iter = iter(data_loader)
+        for b in range(len(data_loader_iter)):
+            try:
+                batch = next(data_loader_iter)
+            except TypeError:
+                # May be faulty data point
+                continue
 
             # Merge positive and negative cases in batch
             for key in batch.keys():
