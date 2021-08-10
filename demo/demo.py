@@ -1,6 +1,5 @@
 import streamlit as st
 
-from civility.classifier.runner import CivilCommentsRunner
 from helpers import load_data, generate_feed, run_classifier
 
 
