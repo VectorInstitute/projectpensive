@@ -28,20 +28,35 @@ def problem_framing():
     with st.expander("Read more"):
         st.write(
             "Media feeds can often populate with hateful and uncivil speech. Simply excluding profane content is not a "
-            "satisfactory solution. Demoting content that contains mildly inappropriate speech (swear words) but provides "
-            "valid points is not ideal to every user. A more comprehensive solution assigns a toxicity score to content "
-            "and allows individuals to set their own tolerance level."
+            "satisfactory solution. Demoting content that contains mildly inappropriate speech (swear words) but "
+            "provides valid points is not ideal to every user. A more comprehensive solution assigns a toxicity score "
+            "to content and allows individuals to set their own tolerance level."
         )
 
     # Diversity
     st.subheader("Diversity")
     with st.expander("Read more"):
-        st.markdown("""
-        On social media platforms, users have the ability to access and engage with millions of pieces of content; this amount of data can become overwhelming and cause difficulty in finding relevant information quickly. Recommendation systems were developed to combat this problem by selecting items a user may appreciate based on their past preferences or demographic information. Traditionally, the focus of these systems has been to optimize the accuracy of the recommendations presented to the user leading to a concentration of highly accurate, but **overly narrow** set of results. This often traps users in a *“filter bubble”* where a user only encounters information and opinions that conform and reinforce their own beliefs. This situation may seem innocuous, however it has been found to fuel issues such as misinformation, unscientific propaganda, conspiracy theories and radical beliefs that have led to real-world violence.""")
-        st.markdown(""" 
-            To combat this growing issue, our focus is to generate recommendations that concentrate on real user experience, specifically increasing the diversity of content that a user views and engages with. Content diversity has many benefits:\
-    - It has been shown to increase user satisfaction
-    - Allows users to explore more of the platform
-    - Prevents the aforementioned “filter bubble” problem
-        """)
-        st.markdown("With the inclusion of diversity into the conversation of recommendation systems, we hope to **promote prosocial behaviour** in online communities and increase **long-term user satisfaction**.")
+        st.markdown(
+            """On social media platforms, users have the ability to access and engage with millions of pieces of 
+            content; this amount of data can become overwhelming and cause difficulty in finding relevant information 
+            quickly. Recommendation systems were developed to combat this problem by selecting items a user may 
+            appreciate based on their past preferences or demographic information. Traditionally, the focus of these 
+            systems has been to optimize the accuracy of the recommendations presented to the user leading to a 
+            concentration of highly accurate, but **overly narrow** set of results. This often traps users in a 
+            *“filter bubble”* where a user only encounters information and opinions that conform and reinforce their 
+            own beliefs. This situation may seem innocuous, however it has been found to fuel issues such as 
+            misinformation, unscientific propaganda, conspiracy theories and radical beliefs that have led to 
+            real-world violence."""
+        )
+        st.markdown(
+            """To combat this growing issue, our focus is to generate recommendations that concentrate on real user 
+            experience, specifically increasing the diversity of content that a user views and engages with. Content 
+            diversity has many benefits:
+                \n- It has been shown to increase user satisfaction
+                \n- Allows users to explore more of the platform
+                \n- Prevents the aforementioned “filter bubble” problem"""
+        )
+        st.markdown(
+            "With the inclusion of diversity into the conversation of recommendation systems, we hope to **promote "
+            "prosocial behaviour** in online communities and increase **long-term user satisfaction**."
+        )

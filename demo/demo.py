@@ -1,6 +1,6 @@
 import streamlit as st
 
-from helpers import load_data, generate_feed, run_classifier
+from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data
 
 
 def demo():
@@ -16,7 +16,7 @@ def demo():
     )
 
     with st.spinner("Loading data..."):
-        data = load_data()
+        data = load_recommender_data()
         st.table(data.head(n=3))
 
     # Civility Filter
@@ -31,6 +31,16 @@ def demo():
 
     text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
+        with st.spinner("Computing..."):
+            output = run_classifier(text_input)
+            if output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            else:
+                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+
+    civil_dataset_options = load_civility_data()
+    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
+    if select_text:
         with st.spinner("Computing..."):
             output = run_classifier(text_input)
             if output > 0.5:
