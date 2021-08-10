@@ -1,3 +1,4 @@
+from datasets import load_dataset
 import pandas as pd
 import streamlit as st
 
@@ -5,7 +6,7 @@ from civility.classifier.runner import CivilCommentsRunner
 
 
 @st.cache(show_spinner=False)
-def load_data():
+def load_recommender_data():
     data = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
     data = data.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
     data = data[["comment", "parent_comment", "author", "subreddit"]]
@@ -47,3 +48,9 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
 def run_classifier(text_input):
     classifier = CivilCommentsRunner("../civility/classifier/results/final_model")
     return classifier.run_model(text_input)
+
+
+@st.cache(show_spinner=False)
+def load_civility_data():
+    data = load_dataset("civil_comments")
+    return data["test"].to_pandas().text[:1000]
