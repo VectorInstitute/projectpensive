@@ -3,6 +3,7 @@ import pandas as pd
 import streamlit as st
 
 from civility.classifier.runner import CivilCommentsRunner
+from diversity_methods import get_similar_comments, greedy_selection, topic_diversification, compute_diversity, compare_diversity
 
 
 @st.cache(show_spinner=False)
@@ -13,10 +14,10 @@ def load_recommender_data():
     return data
 
 
-@st.cache(show_spinner=False)
-def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold):
+@st.cache(show_spinner=False, suppress_st_warning=True)
+def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold, selected_algo=None):
 
-    # unaltered_feed = get_recommendations(query)
+#     unaltered_feed = get_recommendations(query)
     unaltered_feed = data.head(n=query["num_posts"])
     unaltered_feed = unaltered_feed.assign(toxicity_score=0.0)
 
@@ -38,7 +39,32 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
 
         return feed, removed_from_feed
     elif diversity_filter:
-        raise NotImplementedError("Done by sheen")
+        n = int(query["num_posts"])
+        options = unaltered_feed['comment'].to_list()
+        query = st.selectbox("Choose a query comment", options)
+        avg_dissim_control = compute_diversity(get_similar_comments(query, n)[1], n)
+        
+        with st.spinner("Getting feed..."):
+            if selected_algo == None or selected_algo == "None":
+                feed = unaltered_feed
+            else:
+                if selected_algo == "Bounded Greedy Selection":
+                    recommendations = greedy_selection(query, n)[0]
+                    avg_dissim_algo = compute_diversity(greedy_selection(query, n)[1], n)
+                    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                else: 
+                    recommendations = topic_diversification(query, n)[0]
+                    avg_dissim_algo = compute_diversity(topic_diversification(query, n)[1], n)
+                    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                
+                feed = recommendations
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + str(percent_change) + "%")
+
+            st.write("")  # Blank space
+            st.write(
+                "Here is your recommended feed:"
+            )
+        return feed
     # No filter
     else:
         return unaltered_feed

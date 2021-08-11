@@ -138,7 +138,8 @@ def greedy_selection(query, num_to_recommend):
     df_sim = df_sim.set_index(['Comment'])
     df.reset_index()
     df_sim.reset_index()
-    pd.set_option("display.max_colwidth", None)
+    df = df.drop(columns=['vector'])
+    pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
 def topic_diversification(query, n):
@@ -181,13 +182,13 @@ def topic_diversification(query, n):
     for item in df_ils.index:
         P = C_prime.index[C_prime['Comment'] == item]
         Pd = list(dissimilarity_rank.keys()).index(item)
-        new_rank[item] = (a * P) + (b * Pd)
-        
+        new_rank[item] = ((a * P) + (b * Pd))[0]
+    
     final_ranks = {k: v for k, v in sorted(new_rank.items(), key=lambda item: item[1], reverse=False)}
     
     data = []
     for comment, score in final_ranks.items():
-        data.append({'Comment': comment,'Rank': score[0]})
+        data.append({'Comment': comment,'Rank': score})
 
     df_sim = pd.DataFrame(data)
     ils_rank = []
@@ -203,7 +204,8 @@ def topic_diversification(query, n):
     df_sim = df_sim.set_index(['Comment'])
     df.reset_index()
     df_sim.reset_index()
-    pd.set_option("display.max_colwidth", None)
+    df = df.drop(columns=['vector'])
+    pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
 def compute_diversity(df, n):

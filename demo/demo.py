@@ -1,5 +1,5 @@
 import streamlit as st
-
+import pandas as pd
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data
 from diversity_methods import get_similar_comments, greedy_selection, topic_diversification, compute_diversity, compare_diversity
 
@@ -22,23 +22,23 @@ def demo():
         st.table(data.head(n=3))
 
     # Civility Filter
-#     st.subheader("Civility Filter")
-#     st.write(
-#         "We leverage the Hugging Face transformer library to train transformer based NLP models on the civil_comments "
-#         "dataset. A score is assigned to convey the level of civility present in a post."
-#     )
-#     st.write(
-#         "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
-#     )
+    st.subheader("Civility Filter")
+    st.write(
+        "We leverage the Hugging Face transformer library to train transformer based NLP models on the civil_comments "
+        "dataset. A score is assigned to convey the level of civility present in a post."
+    )
+    st.write(
+        "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
+    )
 
-#     text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
-#     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
-#         with st.spinner("Computing..."):
-#             output = run_classifier(text_input)
-#             if output > 0.5:
-#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-#             else:
-#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+    text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
+    if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
+        with st.spinner("Computing..."):
+            output = run_classifier(text_input)
+            if output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            else:
+                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
 #     civil_dataset_options = load_civility_data()
 #     select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
@@ -69,6 +69,7 @@ def demo():
     
     query = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
+    avg_dissim_control = compute_diversity(get_similar_comments(query, 10)[1], 10)
     if algorithm == diversity_algo_options[0]:
         pass
     elif algorithm == diversity_algo_options[1]:
@@ -77,20 +78,20 @@ def demo():
                 st.write("Recommendations computed with Bounded Greedy Selection:")
                 recommendations = greedy_selection(query, 10)[0]
                 st.write(recommendations)
-                avg_dissim_control = compute_diversity(get_similar_comments(query, 10)[1], 10)
                 avg_dissim_algo = compute_diversity(greedy_selection(query, 10)[1], 10)
-                st.write("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(compare_diversity(avg_dissim_algo, avg_dissim_control)) + "%")
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
     else:
         if query not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
                 st.write("Recommendations computed with Topic Diversification:")
                 recommendations = topic_diversification(query, 10)[0]
                 st.write(recommendations)
-                avg_dissim_control = compute_diversity(get_similar_comments(query, 10)[1], 10)
-                avg_dissim_algo = compute_diversity(greedy_selection(query, 10)[1], 10)
-                st.write("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(compare_diversity(avg_dissim_algo, avg_dissim_control)) + "%")
+                avg_dissim_algo = compute_diversity(topic_diversification(query, 10)[1], 10)
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
 
 
     # Applying filters to feed
@@ -120,26 +121,36 @@ def demo():
             "the tolerance level of toxicity"
         )
         civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
+    if diversity_filter:
+        selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
+        civility_threshold = None
     else:
         civility_threshold = None
-
-    st.write("")  # Blank space
-    st.write(
-        "Here is your recommended feed:"
-    )
+        
     query = {
         "user": user_name,
         "subreddit": subreddit,
         "num_posts": num_posts
     }
+    
     feed = None
     removed_from_feed = None
 
     # Get feed
-    with st.spinner("Getting feed..."):
-        if civility_filter and diversity_filter:
+    
+    if civility_filter and diversity_filter:
+        with st.spinner("Getting feed..."):
+            st.write("")  # Blank space
+            st.write(
+                "Here is your recommended feed:"
+            )
             raise NotImplementedError("Done by mike and sheen")
-        elif civility_filter:
+    elif civility_filter:
+        with st.spinner("Getting feed..."):
+            st.write("")  # Blank space
+            st.write(
+                "Here is your recommended feed:"
+            )
             feed, removed_from_feed = generate_feed(
                 data,
                 query,
@@ -147,10 +158,23 @@ def demo():
                 diversity_filter,
                 civility_threshold
             )
-        elif diversity_filter:
-            st.radio("Select a Diversity Algorithm", diversity_algo_options)
-            raise NotImplementedError("Done by sheen")
-        else:
+        st.table(feed)
+    elif diversity_filter:
+        feed = generate_feed(
+            data,
+            query,
+            civility_filter,
+            diversity_filter,
+            civility_threshold, 
+            selected_algo
+        )
+        st.table(feed)
+    else:
+        with st.spinner("Getting feed..."):
+            st.write("")  # Blank space
+            st.write(
+                "Here is your recommended feed:"
+            )
             feed = generate_feed(
                 data,
                 query,
