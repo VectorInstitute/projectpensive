@@ -8,12 +8,9 @@ def demo():
     st.header("Demo")
 
     st.write(
-        "Lets introduce you to the dataset! We are working with the **Sarcastic Comments - REDDIT** dataset: "
-        "https://www.kaggle.com/sherinclaudia/sarcastic-comments-on-reddit."
-    )
-    st.write(
-        "It consists of a balanced selection of sarcastic/genuine comment replies, made by a variety of users in and "
-        "posted in several subreddits. Lets take a look at the data..."
+        "As previously noted, we are working with the `Sarcastic Comments - REDDIT` dataset. These comments are "
+        "provided as options to the Recommender as it generates a social media feed. Lets take a look at some "
+        "preprocessed data..."
     )
     
     
@@ -24,8 +21,8 @@ def demo():
     # Civility Filter
     st.subheader("Civility Filter")
     st.write(
-        "We leverage the Hugging Face transformer library to train transformer based NLP models on the civil_comments "
-        "dataset. A score is assigned to convey the level of civility present in a post."
+        "We leverage the `Hugging Face transformer` library to train transformer based NLP models on the "
+        "`civil_comments` dataset. A score is assigned to convey the level of civility present in a post."
     )
     st.write(
         "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
@@ -111,7 +108,7 @@ def demo():
     subreddit = st.selectbox("Subreddit", popular_reddits)
 
     # Feed settings
-    num_posts = st.slider("How many posts do you want to see?", 5, 100)
+    num_posts = st.slider("How many posts do you want to see?", 5, 100, value=20)
     civility_filter = st.checkbox("Apply civility filter")
     diversity_filter = st.checkbox("Apply diversity filter")
 

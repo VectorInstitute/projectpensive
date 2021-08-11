@@ -20,16 +20,16 @@ def problem_framing():
         "control. They can apply various filters to their feed to enhance their own experience."
     )
     st.write(
-        "Two such filters in development and presented today are our **Civility** and **Diversity** filters."
+        "Two such filters in development and presented today are our `Civility` and `Diversity` filters."
     )
 
     # Civility
     st.subheader("Civility")
     with st.expander("Read more"):
         st.write(
-            "Media feeds can often populate with hateful and uncivil speech. Simply excluding profane content is not a "
-            "satisfactory solution. Demoting content that contains mildly inappropriate speech (swear words) but "
-            "provides valid points is not ideal to every user. A more comprehensive solution assigns a toxicity score "
+            "Media feeds can often populate with hateful and uncivil speech. Simply excluding profane content is an "
+            "unsatisfactory solution. Demoting content that provides valid points but contains mildly inappropriate "
+            "speech (swear words) is not ideal to every user. A more comprehensive solution assigns a toxicity score "
             "to content and allows individuals to set their own tolerance level."
         )
 
