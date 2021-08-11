@@ -29,15 +29,15 @@ st.sidebar.header("Vector Institute: AI Engineering and Technology")
 st.sidebar.image("images/vector_logo.jpeg", width=300)
 sidebar = st.sidebar.selectbox(
     "Demo Section",
-    ("Problem Framing", "Demo", "Design", "Evaluation", "Failed Attempts", "Next Steps")
+    ("Problem Framing", "Design", "Demo", "Evaluation", "Failed Attempts", "Next Steps")
 )
 
 if sidebar == "Problem Framing":
     problem_framing()
-elif sidebar == "Demo":
-    demo()
 elif sidebar == "Design":
     design()
+elif sidebar == "Demo":
+    demo()
 elif sidebar == "Evaluation":
     evaluation()
 elif sidebar == "Failed Attempts":
