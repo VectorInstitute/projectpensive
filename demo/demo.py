@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
-from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
-from diversity_methods import get_embeddings, get_dataframe_with_vectors()
+import torch
+from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
+from diversity_methods import *
 
 
 def demo():
@@ -48,8 +49,6 @@ def demo():
 
     # Diversity Filter
     st.subheader("Diversity Filter")
-    sarcasm_embeddings = get_embeddings()
-    dataset, corpus = get_dataframe_with_vectors()
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
     with st.expander("1. Bounded Greedy Algorithm"):
@@ -64,20 +63,37 @@ def demo():
         """)
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/topic_pseudo.png")
+        
+    embedder, dataset, corpus, sarcasm_embeddings = load_data(data)
     
     query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
-    avg_dissim_control = get_control_diversity(query_comment)
-    if algorithm == diversity_algo_options[0]:
-        pass
-    elif algorithm == diversity_algo_options[1]:
-        if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
+    
+    normal_recommendations = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
+    avg_dissim_control = compute_diversity(normal_recommendations[1], 10)
+    
+    if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
+        if algorithm == diversity_algo_options[0]:
+            pass
+        elif algorithm == diversity_algo_options[1]:
             with st.spinner("Computing..."):
-                get_greedy_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
-    else:
-        if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
+                st.write("Recommendations computed with Bounded Greedy Selection:")
+                recommendations = greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
+                st.table(recommendations[0])
+                avg_dissim_algo = compute_diversity(recommendations[1], 10)
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
+                
+        else:
             with st.spinner("Computing..."):
-                get_topic_diversification_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
+                st.write("Recommendations computed with Topic Diversification:")
+                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 10)
+                st.table(recommendations[0])
+                avg_dissim_algo = compute_diversity(recommendations[1], 10)
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
 
 
     # Applying filters to feed
@@ -136,14 +152,7 @@ def demo():
                 civility_threshold
             )
         elif diversity_filter:
-            feed = generate_feed(
-                data,
-                query,
-                civility_filter,
-                diversity_filter,
-                selected_algo=selected_algo, 
-                query_comment=query_comment
-            )
+            raise NotImplementedError("Done by sheen")
         else:
             feed = generate_feed(
                 data,

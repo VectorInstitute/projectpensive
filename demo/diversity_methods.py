@@ -6,33 +6,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import pdist
 from sentence_transformers import SentenceTransformer, util
 from collections import OrderedDict
-
-@st.cache(show_spinner=False)
-def get_embeddings():
-    sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
-    return sarcasm_embeddings
-
-@st.cache(show_spinner=False)
-def load_dataframe():
-    dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
-    dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
-    dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
-    return dataset
-
-def get_dataframe_with_vectors(sarcasm_embeddings):
-    dataset = load_dataframe()
-    corpus = dataset['comment'].to_list()
-
-    # Add vector embeddings as column in df
-    vectors = []
-    for vector in sarcasm_embeddings:
-        vectors.append(list(vector.cpu().numpy()))
-
-    dataset['vector'] = vectors
-    return dataset, corpus
     
 @st.cache(show_spinner=False)
-def get_similar_comments(dataset, corpus, sarcasm_embeddings, query, n):
+def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
     query (string): the text of the post
@@ -40,7 +16,7 @@ def get_similar_comments(dataset, corpus, sarcasm_embeddings, query, n):
     
     Returns df of top n similar comments
     """
-    embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+#     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
     # Find the closest 5 sentences of the corpus for each query sentence based on cosine similarity
     top_k = min(n, len(corpus))
     query_embedding = embedder.encode(query, convert_to_tensor=True)
@@ -56,7 +32,7 @@ def get_similar_comments(dataset, corpus, sarcasm_embeddings, query, n):
     
     recommend_frame = []
     for val in pairs:
-        recommend_frame.append({'Comment':val[0],'Similarity':val[1].numpy()})
+        recommend_frame.append({'Comment':val[0],'Similarity':val[1].cpu().numpy()})
      
     df = pd.DataFrame(recommend_frame)
     df_sim = df.copy()
@@ -88,7 +64,7 @@ def calculate_quality(c, R, df, df_sim):
     return quality
 
 @st.cache(show_spinner=False)
-def greedy_selection(query, num_to_recommend):
+def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_to_recommend):
     """
     Parameters
     query (string): the text of the post
@@ -96,7 +72,7 @@ def greedy_selection(query, num_to_recommend):
     
     Returns df with diverse comments
     """
-    C_prime = get_similar_comments(dataset, corpus, sarcasm_embeddings, query, 500)[0]
+    C_prime = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, 500)[0]
     
     df_temp = C_prime.copy()
     recommendations = ['dummy']
@@ -141,7 +117,7 @@ def greedy_selection(query, num_to_recommend):
     return df, df_sim
 
 @st.cache(show_spinner=False)
-def topic_diversification(dataset, corpus, sarcasm_embeddings, query, n):
+def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
     query (string): the text of the post
@@ -150,7 +126,7 @@ def topic_diversification(dataset, corpus, sarcasm_embeddings, query, n):
     Returns df with diverse comments
     """
     N = 5 * n
-    C_prime = get_similar_comments(dataset, corpus, sarcasm_embeddings, query, N)[0]
+    C_prime = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, N)[0]
     
     # Prepare df for pariwise distance
     df_ils = C_prime.copy()

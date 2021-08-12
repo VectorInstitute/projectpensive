@@ -3,10 +3,26 @@ import pandas as pd
 import streamlit as st
 
 from civility.classifier.runner import CivilCommentsRunner
-from diversity_methods import get_similar_comments, greedy_selection, topic_diversification, compute_diversity, compare_diversity
-
+from diversity_methods import *
 
 @st.cache(show_spinner=False)
+def load_data(data):
+    embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+    sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
+    dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
+    dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
+    dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
+    corpus = dataset['comment'].to_list()
+    print('this is happening')
+
+    # Add vector embeddings as column in df
+    vectors = []
+    for vector in sarcasm_embeddings:
+        vectors.append(list(vector.cpu().numpy()))
+    dataset['vector'] = vectors
+    return embedder, dataset, corpus, sarcasm_embeddings
+
+@st.cache(show_spinner=False, allow_output_mutation=True)
 def load_recommender_data():
     data = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
     data = data.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
@@ -39,26 +55,7 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
 
         return feed, removed_from_feed
     elif diversity_filter:
-        n = int(query["num_posts"])
-        avg_dissim_control = compute_diversity(get_similar_comments(dataset, corpus, sarcasm_embeddings, query_comment, n)[1], n)
-        
-        with st.spinner("Getting feed..."):
-            if selected_algo == None or selected_algo == "None":
-                feed = unaltered_feed
-            else:
-                if selected_algo == "Bounded Greedy Selection":
-                    recommendations = greedy_selection(dataset, corpus, sarcasm_embeddings, query_comment, n)[0]
-                    avg_dissim_algo = compute_diversity(greedy_selection(dataset, corpus, sarcasm_embeddings, query_comment, n)[1], n)
-                    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                else: 
-                    recommendations = topic_diversification(dataset, corpus, sarcasm_embeddings, query_comment, n)[0]
-                    avg_dissim_algo = compute_diversity(topic_diversification(dataset, corpus, sarcasm_embeddings, query_comment, n)[1], n)
-                    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                
-                feed = recommendations
-                st.text("Compared to a normal recommender, this algorithm increased diversity by " + str(percent_change) + "%")
-                
-        return feed
+        pass
     # No filter
     else:
         return unaltered_feed
@@ -74,31 +71,3 @@ def run_classifier(text_input):
 def load_civility_data():
     data = load_dataset("civil_comments")
     return data["test"].to_pandas().text[:1000]
-
-
-@st.cache(show_spinner=False, suppress_st_warning=True)
-def get_greedy_comments(dataset, corpus, sarcasm_embeddings, query, avg_dissim_control):
-    st.write("Recommendations computed with Bounded Greedy Selection:")
-    recommendations = greedy_selection(dataset, corpus, sarcasm_embeddings, query, 10)[0]
-    st.write(recommendations)
-    avg_dissim_algo = compute_diversity(greedy_selection(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
-    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-    st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-             str(percent_change) + "%")
-    
-    
-@st.cache(show_spinner=False, suppress_st_warning=True)
-def get_topic_diversification_comments(dataset, corpus, sarcasm_embeddings, query, avg_dissim_control):
-    st.write("Recommendations computed with Topic Diversification:")
-    recommendations = topic_diversification(dataset, corpus, sarcasm_embeddings, query, 10)[0]
-    st.write(recommendations)
-    avg_dissim_algo = compute_diversity(topic_diversification(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
-    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-    st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-             str(percent_change) + "%")
-    
-@st.cache(show_spinner=False)
-def get_control_diversity(query):
-    avg_dissim_control = compute_diversity(get_similar_comments(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
-    return avg_dissim_control
-    
