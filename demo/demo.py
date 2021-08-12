@@ -49,7 +49,7 @@ def demo():
     # Diversity Filter
     st.subheader("Diversity Filter")
     sarcasm_embeddings = get_embeddings()
-    dataset, corpus = get_dataframe_with_vectors()
+    dataset, corpus = get_dataframe_with_vectors(sarcasm_embeddings)
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
     with st.expander("1. Bounded Greedy Algorithm"):
