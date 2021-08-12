@@ -15,7 +15,7 @@ def load_recommender_data():
 
 
 @st.cache(show_spinner=False, suppress_st_warning=True)
-def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold, selected_algo=None):
+def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None):
 
 #     unaltered_feed = get_recommendations(query)
     unaltered_feed = data.head(n=query["num_posts"])
@@ -40,8 +40,6 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
         return feed, removed_from_feed
     elif diversity_filter:
         n = int(query["num_posts"])
-        options = unaltered_feed['comment'].to_list()
-        query = st.selectbox("Choose a query comment", options)
         avg_dissim_control = compute_diversity(get_similar_comments(query, n)[1], n)
         
         with st.spinner("Getting feed..."):
@@ -59,11 +57,7 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
                 
                 feed = recommendations
                 st.text("Compared to a normal recommender, this algorithm increased diversity by " + str(percent_change) + "%")
-
-            st.write("")  # Blank space
-            st.write(
-                "Here is your recommended feed:"
-            )
+                
         return feed
     # No filter
     else:
