@@ -67,7 +67,7 @@ def demo():
     
     query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
-    avg_dissim_control = get_control_diversity(query_comment)
+    avg_dissim_control = get_control_diversity(dataset, corpus, sarcasm_embeddings, query_comment)
     if algorithm == diversity_algo_options[0]:
         pass
     elif algorithm == diversity_algo_options[1]:

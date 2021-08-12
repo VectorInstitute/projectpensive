@@ -98,7 +98,7 @@ def get_topic_diversification_comments(dataset, corpus, sarcasm_embeddings, quer
              str(percent_change) + "%")
     
 @st.cache(show_spinner=False)
-def get_control_diversity(query):
+def get_control_diversity(dataset, corpus, sarcasm_embeddings, query):
     avg_dissim_control = compute_diversity(get_similar_comments(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
     return avg_dissim_control
     
