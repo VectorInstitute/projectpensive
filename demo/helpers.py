@@ -15,7 +15,7 @@ def load_recommender_data():
 
 
 @st.cache(show_spinner=False, suppress_st_warning=True)
-def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None):
+def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None, query_comment=None):
 
 #     unaltered_feed = get_recommendations(query)
     unaltered_feed = data.head(n=query["num_posts"])
@@ -40,19 +40,19 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
         return feed, removed_from_feed
     elif diversity_filter:
         n = int(query["num_posts"])
-        avg_dissim_control = compute_diversity(get_similar_comments(query, n)[1], n)
+        avg_dissim_control = compute_diversity(get_similar_comments(query_comment, n)[1], n)
         
         with st.spinner("Getting feed..."):
             if selected_algo == None or selected_algo == "None":
                 feed = unaltered_feed
             else:
                 if selected_algo == "Bounded Greedy Selection":
-                    recommendations = greedy_selection(query, n)[0]
-                    avg_dissim_algo = compute_diversity(greedy_selection(query, n)[1], n)
+                    recommendations = greedy_selection(query_comment, n)[0]
+                    avg_dissim_algo = compute_diversity(greedy_selection(query_comment, n)[1], n)
                     percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
                 else: 
-                    recommendations = topic_diversification(query, n)[0]
-                    avg_dissim_algo = compute_diversity(topic_diversification(query, n)[1], n)
+                    recommendations = topic_diversification(query_comment, n)[0]
+                    avg_dissim_algo = compute_diversity(topic_diversification(query_comment, n)[1], n)
                     percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
                 
                 feed = recommendations

@@ -37,15 +37,15 @@ def demo():
             else:
                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
-    civil_dataset_options = load_civility_data()
-    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
-    if select_text:
-        with st.spinner("Computing..."):
-            output = run_classifier(text_input)
-            if output > 0.5:
-                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-            else:
-                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+#     civil_dataset_options = load_civility_data()
+#     select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
+#     if select_text:
+#         with st.spinner("Computing..."):
+#             output = run_classifier(text_input)
+#             if output > 0.5:
+#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+#             else:
+#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
     # Diversity Filter
     st.subheader("Diversity Filter")
@@ -107,12 +107,6 @@ def demo():
     
     num_posts = st.slider("How many posts do you want to see?", 5, 100, value=10)
     
-    query = {
-        "user": user_name,
-        "subreddit": subreddit,
-        "num_posts": num_posts
-    }
-    
     civility_filter = st.checkbox("Apply civility filter")
     diversity_filter = st.checkbox("Apply diversity filter")
 
@@ -122,16 +116,23 @@ def demo():
             "the tolerance level of toxicity"
         )
         civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
+        query_comment = None
     if diversity_filter:
         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
         options = data['comment'].to_list()[:num_posts]
-        query = st.selectbox("Choose a query comment", options)
+        query_comment = st.selectbox("Choose a query comment", options)
     
     if st.button('Generate Feed'):
             show_feed = True
     
     feed = None
     removed_from_feed = None
+    
+    query = {
+        "user": user_name,
+        "subreddit": subreddit,
+        "num_posts": num_posts
+    }
 
     # Get feed
     if show_feed == True:
@@ -151,7 +152,8 @@ def demo():
                 query,
                 civility_filter,
                 diversity_filter,
-                selected_algo=selected_algo
+                selected_algo=selected_algo, 
+                query_comment=query_comment
             )
         else:
             feed = generate_feed(
