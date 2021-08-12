@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
-from diversity_methods import get_embeddings, get_dataframe_with_vectors
+from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data
+from diversity_methods import *
 
 
 def demo():
@@ -48,8 +48,11 @@ def demo():
 
     # Diversity Filter
     st.subheader("Diversity Filter")
+    import time
+    start_time = time.time()
     sarcasm_embeddings = get_embeddings()
     dataset, corpus = get_dataframe_with_vectors(sarcasm_embeddings)
+    print("--- %s seconds ---" % (time.time() - start_time))
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
     with st.expander("1. Bounded Greedy Algorithm"):
@@ -67,96 +70,109 @@ def demo():
     
     query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
-    avg_dissim_control = get_control_diversity(dataset, corpus, sarcasm_embeddings, query_comment)
+    avg_dissim_control = compute_diversity(get_similar_comments(dataset, corpus, sarcasm_embeddings, query_comment, 10)[1], 10)
     if algorithm == diversity_algo_options[0]:
         pass
     elif algorithm == diversity_algo_options[1]:
         if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                get_greedy_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
+                st.write("Recommendations computed with Bounded Greedy Selection:")
+                recommendations = greedy_selection(dataset, corpus, sarcasm_embeddings, query, 10)[0]
+                st.table(recommendations)
+                avg_dissim_algo = compute_diversity(greedy_selection(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
+                
     else:
         if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                get_topic_diversification_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
+                st.write("Recommendations computed with Topic Diversification:")
+                recommendations = topic_diversification(dataset, corpus, sarcasm_embeddings, query, 10)[0]
+                st.table(recommendations)
+                avg_dissim_algo = compute_diversity(topic_diversification(dataset, corpus, sarcasm_embeddings, query, 10)[1], 10)
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+                         str(percent_change) + "%")
 
 
     # Applying filters to feed
-#     st.subheader("Putting It All Together")
-#     st.write("To simulate the experience of Reddit user, we ask you to sign in as a user from the dataset and select a subreddit you want to     explore.")
-#     st.write("In addition, we ask you to apply your filters and provide the number of posts you wish to see.")
+    st.subheader("Putting It All Together")
+    st.write("To simulate the experience of Reddit user, we ask you to sign in as a user from the dataset and select a subreddit you want to     explore.")
+    st.write("In addition, we ask you to apply your filters and provide the number of posts you wish to see.")
     
-#     show_feed = False
+    show_feed = False
     
-#     # Feed settings
-#     popular_users = list(data.author.value_counts().keys())[:100]
-#     user_name = st.selectbox("Username", popular_users)
+    # Feed settings
+    popular_users = list(data.author.value_counts().keys())[:100]
+    user_name = st.selectbox("Username", popular_users)
 
-#     popular_reddits = list(data.subreddit.value_counts().keys())[:100]
-#     subreddit = st.selectbox("Subreddit", popular_reddits)
+    popular_reddits = list(data.subreddit.value_counts().keys())[:100]
+    subreddit = st.selectbox("Subreddit", popular_reddits)
     
-#     num_posts = st.slider("How many posts do you want to see?", 5, 100, value=10)
+    num_posts = st.slider("How many posts do you want to see?", 5, 100, value=10)
     
-#     civility_filter = st.checkbox("Apply civility filter")
-#     diversity_filter = st.checkbox("Apply diversity filter")
+    civility_filter = st.checkbox("Apply civility filter")
+    diversity_filter = st.checkbox("Apply diversity filter")
 
-#     if civility_filter:
-#         st.write(
-#             "We envision online platforms where users have more control over what they see. Use the slider to change "
-#             "the tolerance level of toxicity"
-#         )
-#         civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
-#         query_comment = None
-#     if diversity_filter:
-#         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
-#         options = data['comment'].to_list()[:num_posts]
-#         query_comment = st.selectbox("Choose a query comment", options)
+    if civility_filter:
+        st.write(
+            "We envision online platforms where users have more control over what they see. Use the slider to change "
+            "the tolerance level of toxicity"
+        )
+        civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
+        query_comment = None
+    if diversity_filter:
+        selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
+        options = data['comment'].to_list()[:num_posts]
+        query_comment = st.selectbox("Choose a query comment", options)
     
-#     if st.button('Generate Feed'):
-#             show_feed = True
+    if st.button('Generate Feed'):
+            show_feed = True
     
-#     feed = None
-#     removed_from_feed = None
+    feed = None
+    removed_from_feed = None
     
-#     query = {
-#         "user": user_name,
-#         "subreddit": subreddit,
-#         "num_posts": num_posts
-#     }
+    query = {
+        "user": user_name,
+        "subreddit": subreddit,
+        "num_posts": num_posts
+    }
 
-#     # Get feed
-#     if show_feed == True:
-#         if civility_filter and diversity_filter:
-#             raise NotImplementedError("Done by mike and sheen")
-#         elif civility_filter:
-#             feed, removed_from_feed = generate_feed(
-#                 data,
-#                 query,
-#                 civility_filter,
-#                 diversity_filter,
-#                 civility_threshold
-#             )
-#         elif diversity_filter:
-#             feed = generate_feed(
-#                 data,
-#                 query,
-#                 civility_filter,
-#                 diversity_filter,
-#                 selected_algo=selected_algo, 
-#                 query_comment=query_comment
-#             )
-#         else:
-#             feed = generate_feed(
-#                 data,
-#                 query,
-#                 civility_filter,
-#                 diversity_filter
-#             )
+    # Get feed
+    if show_feed == True:
+        if civility_filter and diversity_filter:
+            raise NotImplementedError("Done by mike and sheen")
+        elif civility_filter:
+            feed, removed_from_feed = generate_feed(
+                data,
+                query,
+                civility_filter,
+                diversity_filter,
+                civility_threshold
+            )
+        elif diversity_filter:
+            feed = generate_feed(
+                data,
+                query,
+                civility_filter,
+                diversity_filter,
+                selected_algo=selected_algo, 
+                query_comment=query_comment
+            )
+        else:
+            feed = generate_feed(
+                data,
+                query,
+                civility_filter,
+                diversity_filter
+            )
 
-#         st.write("")  # Blank space
-#         st.write("Here is your recommended feed:")
-#         with st.spinner("Getting feed..."):
-#             st.table(feed)
+        st.write("")  # Blank space
+        st.write("Here is your recommended feed:")
+        with st.spinner("Getting feed..."):
+            st.table(feed)
             
-#     if removed_from_feed is not None:
-#         st.write("What was filtered:")
-#         st.table(removed_from_feed)
+    if removed_from_feed is not None:
+        st.write("What was filtered:")
+        st.table(removed_from_feed)
