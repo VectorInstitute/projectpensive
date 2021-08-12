@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
-from diversity_methods import get_embeddings, get_dataframe_with_vectors()
+from diversity_methods import get_embeddings, get_dataframe_with_vectors
 
 
 def demo():
