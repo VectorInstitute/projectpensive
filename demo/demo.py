@@ -37,15 +37,15 @@ def demo():
             else:
                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
-#     civil_dataset_options = load_civility_data()
-#     select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
-#     if select_text:
-#         with st.spinner("Computing..."):
-#             output = run_classifier(text_input)
-#             if output > 0.5:
-#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-#             else:
-#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+    civil_dataset_options = load_civility_data()
+    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
+    if select_text:
+        with st.spinner("Computing..."):
+            output = run_classifier(text_input)
+            if output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            else:
+                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
     # Diversity Filter
     st.subheader("Diversity Filter")
