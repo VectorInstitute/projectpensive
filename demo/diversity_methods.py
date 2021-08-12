@@ -7,8 +7,6 @@ from scipy.spatial.distance import pdist
 from sentence_transformers import SentenceTransformer, util
 from collections import OrderedDict
 
-embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
-
 @st.cache(show_spinner=False)
 def get_embeddings():
     sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
@@ -46,6 +44,7 @@ def get_similar_comments(query, n):
     
     Returns df of top n similar comments
     """
+    embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
     # Find the closest 5 sentences of the corpus for each query sentence based on cosine similarity
     top_k = min(n, len(corpus))
     query_embedding = embedder.encode(query, convert_to_tensor=True)
