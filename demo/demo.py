@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
-from diversity_methods import get_embeddings
+from diversity_methods import get_embeddings, get_dataframe_with_vectors()
 
 
 def demo():
@@ -49,6 +49,7 @@ def demo():
     # Diversity Filter
     st.subheader("Diversity Filter")
     sarcasm_embeddings = get_embeddings()
+    dataset, corpus = get_dataframe_with_vectors()
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
     with st.expander("1. Bounded Greedy Algorithm"):
@@ -72,11 +73,11 @@ def demo():
     elif algorithm == diversity_algo_options[1]:
         if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                get_greedy_comments(query_comment, avg_dissim_control)
+                get_greedy_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
     else:
         if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                get_topic_diversification_comments(query_comment, avg_dissim_control)
+                get_topic_diversification_comments(dataset, corpus, sarcasm_embeddings, query_comment, avg_dissim_control)
 
 
     # Applying filters to feed

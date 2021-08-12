@@ -19,23 +19,20 @@ def load_dataframe():
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     return dataset
 
-def get_dataframe_with_vectors():
+def get_dataframe_with_vectors(sarcasm_embeddings):
     dataset = load_dataframe()
     corpus = dataset['comment'].to_list()
 
     # Add vector embeddings as column in df
     vectors = []
-    sarcasm_embeddings = get_embeddings()
     for vector in sarcasm_embeddings:
         vectors.append(list(vector.cpu().numpy()))
 
     dataset['vector'] = vectors
     return dataset, corpus
-
-dataset, corpus = get_dataframe_with_vectors()
     
 @st.cache(show_spinner=False)
-def get_similar_comments(query, n):
+def get_similar_comments(dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
     query (string): the text of the post
@@ -50,7 +47,6 @@ def get_similar_comments(query, n):
     similarities = []
     pairs = []
     
-    sarcasm_embeddings = get_embeddings()
     # We use cosine-similarity and torch.topk to find the highest 5 scores
     cos_scores = util.pytorch_cos_sim(query_embedding.cpu(), sarcasm_embeddings)[0]
     top_results = torch.topk(cos_scores, k=top_k)
@@ -100,7 +96,7 @@ def greedy_selection(query, num_to_recommend):
     
     Returns df with diverse comments
     """
-    C_prime = get_similar_comments(query, 500)[0]
+    C_prime = get_similar_comments(dataset, corpus, sarcasm_embeddings, query, 500)[0]
     
     df_temp = C_prime.copy()
     recommendations = ['dummy']
@@ -145,7 +141,7 @@ def greedy_selection(query, num_to_recommend):
     return df, df_sim
 
 @st.cache(show_spinner=False)
-def topic_diversification(query, n):
+def topic_diversification(dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
     query (string): the text of the post
@@ -154,7 +150,7 @@ def topic_diversification(query, n):
     Returns df with diverse comments
     """
     N = 5 * n
-    C_prime = get_similar_comments(query, N)[0]
+    C_prime = get_similar_comments(dataset, corpus, sarcasm_embeddings, query, N)[0]
     
     # Prepare df for pariwise distance
     df_ils = C_prime.copy()
