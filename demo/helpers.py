@@ -5,7 +5,7 @@ import streamlit as st
 from civility.classifier.runner import CivilCommentsRunner
 from diversity_methods import *
 
-@st.cache(show_spinner=False)
+@st.cache(show_spinner=False, allow_output_mutation=True)
 def load_data(data):
     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
     sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
@@ -13,7 +13,6 @@ def load_data(data):
     dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     corpus = dataset['comment'].to_list()
-    print('this is happening')
 
     # Add vector embeddings as column in df
     vectors = []

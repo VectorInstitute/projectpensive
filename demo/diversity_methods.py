@@ -110,8 +110,8 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
     df = df_sim.copy()
     df = df.join(dataset.set_index('comment'), on='Comment')
     df_sim = df_sim.set_index(['Comment'])
-    df.reset_index()
-    df_sim.reset_index()
+    df = df.reset_index()
+    df_sim = df_sim.reset_index()
     df = df.drop(columns=['vector'])
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
@@ -177,8 +177,8 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
     df = df.join(dataset.set_index('comment'), on='Comment')
     df_sim = df_sim.drop(columns=['Rank'])
     df_sim = df_sim.set_index(['Comment'])
-    df.reset_index()
-    df_sim.reset_index()
+    df = df.reset_index()
+    df_sim= df_sim.reset_index()
     df = df.drop(columns=['vector'])
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim

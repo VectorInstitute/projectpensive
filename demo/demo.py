@@ -88,7 +88,7 @@ def demo():
         else:
             with st.spinner("Computing..."):
                 st.write("Recommendations computed with Topic Diversification:")
-                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 10)
+                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
                 st.table(recommendations[0])
                 avg_dissim_algo = compute_diversity(recommendations[1], 10)
                 percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
