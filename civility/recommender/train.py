@@ -13,20 +13,10 @@ if __name__ == "__main__":
     """
 
     # Load Data
-    data = pd.read_csv("train-balanced-sarcasm.csv")
-    data = data.drop(["label", "score", "ups", "downs", "date", "created_utc", "parent_comment"], 1)
-
-    # Preprocess data, removing data points where author does not make more than one comment
-    ids_to_drop = []
-    author_value_counts = data.author.value_counts() > 1
-    for author, condition in author_value_counts.items():
-        if not condition:
-            ids_to_drop += data.index[data["author"] == author].tolist()
-    data = data.drop(ids_to_drop)
-    data = data.reset_index(drop=True)
+    data = pd.read_csv("train-balanced-sarcasm-processed.csv")
 
     # Note that batch_size is essentially doubled to include a negative pair
-    batch_size = 32
+    batch_size = 15
     data_set = SarcasticDataset(data)
     data_loader = torch.utils.data.DataLoader(data_set, shuffle=True, batch_size=batch_size, num_workers=0)
 
@@ -34,7 +24,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # Define model
-    model = RecommenderEngine(data, n_factors=1000, device=device)
+    model = RecommenderEngine(data, n_factors=300, device=device)
     loss_fn = torch.nn.BCEWithLogitsLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
