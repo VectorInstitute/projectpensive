@@ -19,17 +19,20 @@ def load_dataframe():
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     return dataset
 
+@st.cache(show_spinner=False)
 def get_dataframe_with_vectors(sarcasm_embeddings):
     dataset = load_dataframe()
     corpus = dataset['comment'].to_list()
+    
+    temp_dataset = dataset.copy()
 
     # Add vector embeddings as column in df
     vectors = []
     for vector in sarcasm_embeddings:
         vectors.append(list(vector.cpu().numpy()))
 
-    dataset['vector'] = vectors
-    return dataset, corpus
+    temp_dataset['vector'] = vectors
+    return temp_dataset, corpus
     
 @st.cache(show_spinner=False)
 def get_similar_comments(dataset, corpus, sarcasm_embeddings, query, n):
@@ -88,7 +91,7 @@ def calculate_quality(c, R, df, df_sim):
     return quality
 
 @st.cache(show_spinner=False)
-def greedy_selection(query, num_to_recommend):
+def greedy_selection(dataset, corpus, sarcasm_embeddings, query, num_to_recommend):
     """
     Parameters
     query (string): the text of the post
