@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
+from diversity_methods import get_embeddings
 
 
 def demo():
@@ -11,7 +12,6 @@ def demo():
         "provided as options to the Recommender as it generates a social media feed. Lets take a look at some "
         "preprocessed data..."
     )
-    
     
     with st.spinner("Loading data..."):
         data = load_recommender_data()
@@ -48,6 +48,7 @@ def demo():
 
     # Diversity Filter
     st.subheader("Diversity Filter")
+    sarcasm_embeddings = get_embeddings()
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
     with st.expander("1. Bounded Greedy Algorithm"):

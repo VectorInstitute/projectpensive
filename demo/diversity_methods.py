@@ -12,8 +12,6 @@ def get_embeddings():
     sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
     return sarcasm_embeddings
 
-sarcasm_embeddings = get_embeddings()
-
 @st.cache(show_spinner=False)
 def load_dataframe():
     dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
@@ -21,19 +19,20 @@ def load_dataframe():
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     return dataset
 
-def get_dataframe_with_vectors(sarcasm_embeddings):
+def get_dataframe_with_vectors():
     dataset = load_dataframe()
     corpus = dataset['comment'].to_list()
 
     # Add vector embeddings as column in df
     vectors = []
+    sarcasm_embeddings = get_embeddings()
     for vector in sarcasm_embeddings:
         vectors.append(list(vector.cpu().numpy()))
 
     dataset['vector'] = vectors
     return dataset, corpus
 
-dataset, corpus = get_dataframe_with_vectors(sarcasm_embeddings)
+dataset, corpus = get_dataframe_with_vectors()
     
 @st.cache(show_spinner=False)
 def get_similar_comments(query, n):
