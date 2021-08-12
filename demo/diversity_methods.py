@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import streamlit as st
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import pdist
@@ -8,34 +9,35 @@ from collections import OrderedDict
 
 embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
-sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
+@st.cache(show_spinner=False)
+def get_embeddings():
+    sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
+    return sarcasm_embeddings
 
+sarcasm_embeddings = get_embeddings()
+
+@st.cache(show_spinner=False)
 def load_dataframe():
     dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
     dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     return dataset
 
+def get_dataframe_with_vectors(sarcasm_embeddings):
+    dataset = load_dataframe()
+    corpus = dataset['comment'].to_list()
 
-dataset = load_dataframe()
-corpus = dataset['comment'].to_list()
+    # Add vector embeddings as column in df
+    vectors = []
+    for vector in sarcasm_embeddings:
+        vectors.append(list(vector.cpu().numpy()))
 
-# Add vector embeddings as column in df
-vectors = []
-for vector in sarcasm_embeddings:
-    vectors.append(list(vector.cpu().numpy()))
+    dataset['vector'] = vectors
+    return dataset, corpus
 
-dataset['vector'] = vectors
-
-def get_embeddings(comments):
-    selected = df['Comment'].isin(comments)
-    embeddings = []
-    for vec in df['vector']:
-        if list(vec.cpu().numpy()) in selected['vector']:
-            embeddings.append(vec)
+dataset, corpus = get_dataframe_with_vectors(sarcasm_embeddings)
     
-    return embeddings
-
+@st.cache(show_spinner=False)
 def get_similar_comments(query, n):
     """
     Parameters
@@ -49,7 +51,8 @@ def get_similar_comments(query, n):
     query_embedding = embedder.encode(query, convert_to_tensor=True)
     similarities = []
     pairs = []
-
+    
+    sarcasm_embeddings = get_embeddings()
     # We use cosine-similarity and torch.topk to find the highest 5 scores
     cos_scores = util.pytorch_cos_sim(query_embedding.cpu(), sarcasm_embeddings)[0]
     top_results = torch.topk(cos_scores, k=top_k)
@@ -67,6 +70,7 @@ def get_similar_comments(query, n):
     df = df.join(dataset.set_index('comment'), on='Comment')
     return df, df_sim
 
+@st.cache(show_spinner=False)
 def calculate_quality(c, R, df, df_sim):
     """
     *add
@@ -89,7 +93,7 @@ def calculate_quality(c, R, df, df_sim):
     quality = rel_diversity[0][0] * similarity # quality
     return quality
 
-
+@st.cache(show_spinner=False)
 def greedy_selection(query, num_to_recommend):
     """
     Parameters
@@ -142,6 +146,7 @@ def greedy_selection(query, num_to_recommend):
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
+@st.cache(show_spinner=False)
 def topic_diversification(query, n):
     """
     Parameters
@@ -208,11 +213,13 @@ def topic_diversification(query, n):
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
+@st.cache(show_spinner=False)
 def compute_diversity(df, n):
     dis_similarity = [x for x in pdist(df)]
     avg_dissim_greedy = (sum(dis_similarity))/((n/2)*(n-1))
     return avg_dissim_greedy
 
+@st.cache(show_spinner=False)
 def compare_diversity(avg_dissim_algo, avg_dissim_control):
     percent_change = ((avg_dissim_algo - avg_dissim_control)/avg_dissim_control)*100
     return round(percent_change, 2)

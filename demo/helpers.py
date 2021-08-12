@@ -74,3 +74,31 @@ def run_classifier(text_input):
 def load_civility_data():
     data = load_dataset("civil_comments")
     return data["test"].to_pandas().text[:1000]
+
+
+@st.cache(show_spinner=False, suppress_st_warning=True)
+def get_greedy_comments(query, avg_dissim_control):
+    st.write("Recommendations computed with Bounded Greedy Selection:")
+    recommendations = greedy_selection(query, 10)[0]
+    st.write(recommendations)
+    avg_dissim_algo = compute_diversity(greedy_selection(query, 10)[1], 10)
+    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+    st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+             str(percent_change) + "%")
+    
+    
+@st.cache(show_spinner=False, suppress_st_warning=True)
+def get_topic_diversification_comments(query, avg_dissim_control):
+    st.write("Recommendations computed with Topic Diversification:")
+    recommendations = topic_diversification(query, 10)[0]
+    st.write(recommendations)
+    avg_dissim_algo = compute_diversity(topic_diversification(query, 10)[1], 10)
+    percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+    st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
+             str(percent_change) + "%")
+    
+@st.cache(show_spinner=False)
+def get_control_diversity(query):
+    avg_dissim_control = compute_diversity(get_similar_comments(query, 10)[1], 10)
+    return avg_dissim_control
+    

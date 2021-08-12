@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data
-from diversity_methods import get_similar_comments, greedy_selection, topic_diversification, compute_diversity, compare_diversity
+from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, get_greedy_comments, get_topic_diversification_comments, get_control_diversity
 
 
 def demo():
@@ -64,31 +63,19 @@ def demo():
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/topic_pseudo.png")
     
-    query = st.text_input(label="Provide a comment to get diverse recommendations")
+    query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
-    avg_dissim_control = compute_diversity(get_similar_comments(query, 10)[1], 10)
+    avg_dissim_control = get_control_diversity(query_comment)
     if algorithm == diversity_algo_options[0]:
         pass
     elif algorithm == diversity_algo_options[1]:
-        if query not in ["Provide a comment to get diverse recommendations", ""]:
+        if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                st.write("Recommendations computed with Bounded Greedy Selection:")
-                recommendations = greedy_selection(query, 10)[0]
-                st.write(recommendations)
-                avg_dissim_algo = compute_diversity(greedy_selection(query, 10)[1], 10)
-                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(percent_change) + "%")
+                get_greedy_comments(query_comment, avg_dissim_control)
     else:
-        if query not in ["Provide a comment to get diverse recommendations", ""]:
+        if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
             with st.spinner("Computing..."):
-                st.write("Recommendations computed with Topic Diversification:")
-                recommendations = topic_diversification(query, 10)[0]
-                st.write(recommendations)
-                avg_dissim_algo = compute_diversity(topic_diversification(query, 10)[1], 10)
-                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(percent_change) + "%")
+                get_topic_diversification_comments(query_comment, avg_dissim_control)
 
 
     # Applying filters to feed
