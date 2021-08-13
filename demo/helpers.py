@@ -9,9 +9,7 @@ from diversity_methods import *
 def load_data(data):
     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
     sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
-    dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
-    dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
-    dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
+    dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm-processed.csv")
     corpus = dataset['comment'].to_list()
   
     # Add vector embeddings as column in df
@@ -23,9 +21,7 @@ def load_data(data):
 
 @st.cache(show_spinner=False, allow_output_mutation=True)
 def load_recommender_data():
-    data = pd.read_csv("../civility/recommender/train-balanced-sarcasm.csv")
-    data = data.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
-    data = data[["comment", "parent_comment", "author", "subreddit"]]
+    data = pd.read_csv("../civility/recommender/train-balanced-sarcasm-processed.csv")
     return data
 
 @st.cache(show_spinner=False, suppress_st_warning=True)
