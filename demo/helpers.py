@@ -12,7 +12,7 @@ from diversity_methods import compare_diversity, compute_diversity, get_similar_
 @st.cache(show_spinner=False, allow_output_mutation=True)
 def load_data():
     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
-    sarcasm_embeddings = torch.load("../diversity/sarcasm-embeddings-processed.pt", map_location=torch.device('cpu'))
+    sarcasm_embeddings = torch.load("../diversity/datasets/sarcasm-embeddings-processed.pt", map_location=torch.device('cpu'))
     dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm-processed.csv")
     corpus = dataset['comment'].to_list()
   
@@ -22,7 +22,7 @@ def load_data():
         vectors.append(list(vector.numpy()))
     dataset['vector'] = vectors
     
-    subreddit_embeddings = pd.read_csv('../diversity/subreddit_embeddings.csv')
+    subreddit_embeddings = pd.read_csv('../diversity/datasets/subreddit_embeddings.csv')
     return embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings
 
 
