@@ -7,7 +7,6 @@ from scipy.spatial.distance import pdist
 from sentence_transformers import SentenceTransformer, util
 from collections import OrderedDict
     
-@st.cache(show_spinner=False)
 def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
@@ -40,7 +39,6 @@ def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n
     df = df.join(dataset.set_index('comment'), on='Comment')
     return df, df_sim
 
-@st.cache(show_spinner=False)
 def calculate_quality(c, R, df, df_sim):
     """
     *add
@@ -63,7 +61,6 @@ def calculate_quality(c, R, df, df_sim):
     quality = rel_diversity[0][0] * similarity # quality
     return quality
 
-@st.cache(show_spinner=False)
 def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_to_recommend):
     """
     Parameters
@@ -72,7 +69,7 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
     
     Returns df with diverse comments
     """
-    C_prime = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, 100)[0]
+    C_prime = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, 500)[0]
     
     df_temp = C_prime.copy()
     recommendations = ['dummy']
@@ -111,11 +108,10 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
     df = df.join(dataset.set_index('comment'), on='Comment')
     df_sim = df_sim.set_index(['Comment'])
     df = df.reset_index()
-    df = df.drop(columns=['vector'])
+    df = df.drop(columns=['vector','index'])
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
-@st.cache(show_spinner=False)
 def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
@@ -177,17 +173,15 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
     df_sim = df_sim.drop(columns=['Rank'])
     df_sim = df_sim.set_index(['Comment'])
     df = df.reset_index()
-    df = df.drop(columns=['vector'])
+    df = df.drop(columns=['vector', 'index'])
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
-@st.cache(show_spinner=False)
 def compute_diversity(df, n):
     dis_similarity = [x for x in pdist(df)]
     avg_dissim_greedy = (sum(dis_similarity))/((n/2)*(n-1))
     return avg_dissim_greedy
 
-@st.cache(show_spinner=False)
 def compare_diversity(avg_dissim_algo, avg_dissim_control):
     percent_change = ((avg_dissim_algo - avg_dissim_control)/avg_dissim_control)*100
     return round(percent_change, 2)
