@@ -38,7 +38,7 @@ def failed_attempts():
         st.write(
             "Once we built our own custom training loop, it was much easier to train a civility classifier that "
             "converged. Now we just need to provide multi-GPU training support for the training loop. To handle this, "
-            "we leverage `PyTorch Lightning'. The combination of the custom training loop with a multi-GPU training "
+            "we leverage `PyTorch Lightning`. The combination of the custom training loop with a multi-GPU training "
             "scheme is our final implementation."
         )
 
