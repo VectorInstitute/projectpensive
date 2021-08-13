@@ -27,7 +27,7 @@ def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n
     top_results = torch.topk(cos_scores, k=top_k)
 
     for score, idx in zip(top_results[0], top_results[1]):
-        pairs.append(tuple((corpus[idx], score)))s
+        pairs.append(tuple((corpus[idx], score)))
     
     recommend_frame = []
     for val in pairs:

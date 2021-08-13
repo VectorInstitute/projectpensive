@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import torch
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
-from diversity_methods import *
+from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification
 import time
 
 
