@@ -195,9 +195,9 @@ def demo():
                     sarcasm_embeddings
                 )
             st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
-            feed = feed[["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]]
+            feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score", "toxicity_score"]]
             removed_from_feed = removed_from_feed[
-                ["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]
+                ["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score", "toxicity_score"]
             ]
         elif civility_filter:
             with st.spinner("Generating civil feed..."):
@@ -230,9 +230,9 @@ def demo():
                     sarcasm_embeddings
                 )
             st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
-            feed = feed[["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score"]]
+            feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score"]]
             removed_from_feed = removed_from_feed[
-                ["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]
+                ["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score"]
             ]
         else:
             with st.spinner("Generating feed..."):
