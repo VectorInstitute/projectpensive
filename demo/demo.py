@@ -231,9 +231,7 @@ def demo():
                 )
             st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
             feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score"]]
-            removed_from_feed = removed_from_feed[
-                ["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score"]
-            ]
+
         else:
             with st.spinner("Generating feed..."):
                 feed = generate_feed(
