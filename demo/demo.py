@@ -82,7 +82,7 @@ def demo():
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/topic_pseudo.png")
         
-    embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings = load_data(data)
+    embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings = load_data()
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
     query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     
@@ -172,7 +172,7 @@ def demo():
     removed_from_feed = None
     
     query = {
-        "user": user_name,
+        "author": user_name,
         "subreddit": subreddit,
         "num_posts": num_posts
     }

@@ -4,12 +4,13 @@ import streamlit as st
 import torch
 from sentence_transformers import SentenceTransformer
 from civility.classifier.runner import CivilCommentsRunner
+from civility.recommender.runner import RecommenderEngineRunner
 from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, \
     topic_diversification
 
 
 @st.cache(show_spinner=False, allow_output_mutation=True)
-def load_data(data):
+def load_data():
     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
     sarcasm_embeddings = torch.load("../diversity/sarcasm-embeddings-processed.pt", map_location=torch.device('cpu'))
     dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm-processed.csv")
@@ -31,14 +32,21 @@ def load_recommender_data():
     return data
 
 
+@st.cache(show_spinner=False)
+def load_recommender_model(data):
+    model = RecommenderEngineRunner("data/final_model", data, 100)
+    return model
+
+
 @st.cache(show_spinner=False, suppress_st_warning=True)
 def generate_feed(
         data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None,
         selected_comment=None, embedder=None, dataset=None, corpus=None, sarcasm_embeddings=None
 ):
 
-    # unaltered_feed = get_recommendations(query)
-    unaltered_feed = data.head(n=query["num_posts"])
+    model = load_recommender_model(data)
+    unaltered_feed = model.run_model(query, data)
+    unaltered_feed = unaltered_feed.head(n=query["num_posts"])
 
     if civility_filter and diversity_filter:
         # Run diversity
