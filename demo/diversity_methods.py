@@ -83,7 +83,7 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
     recommendations = ['dummy']
     recommendations[0] = C_prime["comment"][0]  # first item is always the one with the highest similarity
 
-    index = df_temp[(df_temp.Comment == recommendations[0])].index
+    index = df_temp[(df_temp.comment == recommendations[0])].index
 
     df_temp = df_temp.drop(index)
     
@@ -98,7 +98,7 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
         highest_quality_subreddit = max(qualities, key= lambda x: qualities[x])
         recommendations.append(highest_quality_subreddit)
 
-        index = df_temp[(df_temp.Comment == recommendations[-1])].index
+        index = df_temp[(df_temp.comment == recommendations[-1])].index
         df_temp = df_temp.drop(index)
         
     similarities = []
