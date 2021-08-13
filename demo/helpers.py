@@ -8,7 +8,7 @@ from diversity_methods import *
 @st.cache(show_spinner=False, allow_output_mutation=True)
 def load_data(data):
     embedder = SentenceTransformer('paraphrase-MiniLM-L6-v2')
-    sarcasm_embeddings = torch.load("data/sarcasm_embeddings.pt", map_location=torch.device('cpu'))
+    sarcasm_embeddings = torch.load("../diversity/sarcasm-embeddings-processed.pt", map_location=torch.device('cpu'))
     dataset = pd.read_csv("../civility/recommender/train-balanced-sarcasm-processed.csv")
     corpus = dataset['comment'].to_list()
   
