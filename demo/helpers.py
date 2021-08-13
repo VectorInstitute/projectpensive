@@ -20,7 +20,9 @@ def load_data(data):
     for vector in sarcasm_embeddings:
         vectors.append(list(vector.numpy()))
     dataset['vector'] = vectors
-    return embedder, dataset, corpus, sarcasm_embeddings
+    
+    subreddit_embeddings = pd.read_csv('../diversity/subreddit_embeddings.csv')
+    return embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings
 
 
 @st.cache(show_spinner=False, allow_output_mutation=True)

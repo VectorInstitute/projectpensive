@@ -1,7 +1,7 @@
 import streamlit as st
 
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
-from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification
+from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
 
 
 def demo():
@@ -48,6 +48,7 @@ def demo():
 
     # Diversity Filter
     st.subheader("Diversity Filter")
+    st.markdown("#### Comment Recommender")
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown(
         "Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then "
@@ -81,7 +82,7 @@ def demo():
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/topic_pseudo.png")
         
-    embedder, dataset, corpus, sarcasm_embeddings = load_data(data)
+    embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings = load_data(data)
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
     query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     
@@ -110,6 +111,24 @@ def demo():
                 st.text(
                     f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
                 )
+    
+    st.markdown("#### Subreddit Recommender")
+    subreddit_options = ["None", "AskReddit", "Coronavirus", "antivax", "DebateCommunism", "worldnews", "DebateReligion"]
+    chosen_subreddit = st.selectbox("Choose a Subreddit", subreddit_options)
+#     st.table(subreddit_embeddings.head())
+    if chosen_subreddit is not subreddit_options[0]:
+        st.write("Recommendations computed with Bounded Greedy Selection:")
+        with st.spinner("Computing..."):
+            normal_subreddit = get_similar_subreddits(subreddit_embeddings, chosen_subreddit, 10)[1]
+            diversity_control = compute_diversity(normal_subreddit, 10)
+            sub_recs = subreddit_greedy_selection(subreddit_embeddings, chosen_subreddit, 10)
+            st.table(sub_recs[0])
+            diversity_algo = compute_diversity(sub_recs[1], 10)
+            percent_change = compare_diversity(diversity_algo, diversity_control)
+            st.text(
+                f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
+            )
+    
 
     # Applying filters to feed
     st.subheader("Putting It All Together")
