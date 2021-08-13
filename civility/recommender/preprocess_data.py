@@ -29,5 +29,6 @@ if __name__ == "__main__":
             # all following authors will not meed the condition
             break
     data = data.loc[data["author"].isin(good_authors)]
+    data = data.reset_index(drop=True)
 
     data.to_csv("train-balanced-sarcasm-processed.csv")
