@@ -119,11 +119,10 @@ def demo():
             "the tolerance level of toxicity"
         )
         civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
-        query_comment = None
     if diversity_filter:
         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
         options = data['comment'].to_list()[:num_posts]
-        query_comment = st.selectbox("Choose a query comment", options)
+        selected_comment = st.selectbox("Choose a query comment", options)
     
     if st.button('Generate Feed'):
             show_feed = True
@@ -150,7 +149,19 @@ def demo():
                 civility_threshold
             )
         elif diversity_filter:
-            raise NotImplementedError("Done by sheen")
+#             raise NotImplementedError("Done by sheen")
+            civility_threshold = None
+            feed, percent_change = generate_feed(
+                data,
+                query,
+                civility_filter,
+                diversity_filter,
+                civility_threshold,
+                selected_algo, 
+                selected_comment,
+                embedder, dataset, corpus, sarcasm_embeddings
+            )
+            st.text("Compared to a normal recommender, this algorithm increased diversity by " + str(percent_change) + "%")
         else:
             feed = generate_feed(
                 data,

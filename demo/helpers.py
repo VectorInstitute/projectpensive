@@ -29,7 +29,7 @@ def load_recommender_data():
     return data
 
 @st.cache(show_spinner=False, suppress_st_warning=True)
-def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None, query_comment=None):
+def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None, selected_comment=None, embedder=None, dataset=None, corpus=None, sarcasm_embeddings=None):
 
 #     unaltered_feed = get_recommendations(query)
     unaltered_feed = data.head(n=query["num_posts"])
@@ -53,7 +53,28 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
 
         return feed, removed_from_feed
     elif diversity_filter:
-        pass
+        with st.spinner("Computing..."):
+            n = query["num_posts"]
+            normal_recommendations = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, selected_comment, n)
+            avg_dissim_control = compute_diversity(normal_recommendations[1], n)
+
+            if selected_algo == "None":
+                feed = unaltered_feed
+                percent_change = 0
+            elif selected_algo == "Bounded Greedy Selection":
+                st.write("Recommendations computed with Bounded Greedy Selection:")
+                recommendations = greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, selected_comment, n)
+                avg_dissim_algo = compute_diversity(recommendations[1], n)
+                feed = recommendations[0]
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+            else:
+                st.write("Recommendations computed with Topic Diversification:")
+                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, selected_comment, n)
+                avg_dissim_algo = compute_diversity(recommendations[1], n)
+                feed = recommendations[0]
+                percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
+            
+            return feed, percent_change
     # No filter
     else:
         return unaltered_feed
