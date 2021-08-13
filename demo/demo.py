@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
 from diversity_methods import *
+import time
 
 
 def demo():
@@ -65,32 +66,29 @@ def demo():
         col2.image("images/topic_pseudo.png")
         
     embedder, dataset, corpus, sarcasm_embeddings = load_data(data)
-    
-    query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     algorithm = st.selectbox("Choose a diversity algorithm", diversity_algo_options)
-    
-    normal_recommendations = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
-    avg_dissim_control = compute_diversity(normal_recommendations[1], 10)
+    query_comment = st.text_input(label="Provide a comment to get diverse recommendations")
     
     if query_comment not in ["Provide a comment to get diverse recommendations", ""]:
-        if algorithm == diversity_algo_options[0]:
-            pass
-        elif algorithm == diversity_algo_options[1]:
-            with st.spinner("Computing..."):
+        with st.spinner("Computing..."):
+            normal_recommendations = get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 6)
+            avg_dissim_control = compute_diversity(normal_recommendations[1], 6)
+
+            if algorithm == diversity_algo_options[0]:
+                pass
+            elif algorithm == diversity_algo_options[1]:
                 st.write("Recommendations computed with Bounded Greedy Selection:")
-                recommendations = greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
+                recommendations = greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 6)
                 st.table(recommendations[0])
-                avg_dissim_algo = compute_diversity(recommendations[1], 10)
+                avg_dissim_algo = compute_diversity(recommendations[1], 6)
                 percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
                 st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
                          str(percent_change) + "%")
-                
-        else:
-            with st.spinner("Computing..."):
+            else:
                 st.write("Recommendations computed with Topic Diversification:")
-                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 10)
+                recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 6)
                 st.table(recommendations[0])
-                avg_dissim_algo = compute_diversity(recommendations[1], 10)
+                avg_dissim_algo = compute_diversity(recommendations[1], 6)
                 percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
                 st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
                          str(percent_change) + "%")
@@ -110,7 +108,7 @@ def demo():
     popular_reddits = list(data.subreddit.value_counts().keys())[:100]
     subreddit = st.selectbox("Subreddit", popular_reddits)
     
-    num_posts = st.slider("How many posts do you want to see?", 5, 100, value=10)
+    num_posts = st.slider("How many posts do you want to see?", 5, 100, value=6)
     
     civility_filter = st.checkbox("Apply civility filter")
     diversity_filter = st.checkbox("Apply diversity filter")

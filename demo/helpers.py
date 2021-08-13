@@ -1,7 +1,7 @@
 from datasets import load_dataset
 import pandas as pd
 import streamlit as st
-
+import time
 from civility.classifier.runner import CivilCommentsRunner
 from diversity_methods import *
 
@@ -13,11 +13,11 @@ def load_data(data):
     dataset = dataset.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
     dataset = dataset[["comment", "parent_comment", "author", "subreddit"]]
     corpus = dataset['comment'].to_list()
-
+  
     # Add vector embeddings as column in df
     vectors = []
     for vector in sarcasm_embeddings:
-        vectors.append(list(vector.cpu().numpy()))
+        vectors.append(list(vector.numpy()))
     dataset['vector'] = vectors
     return embedder, dataset, corpus, sarcasm_embeddings
 
@@ -27,7 +27,6 @@ def load_recommender_data():
     data = data.drop(["label", "score", "ups", "downs", "date", "created_utc"], 1)
     data = data[["comment", "parent_comment", "author", "subreddit"]]
     return data
-
 
 @st.cache(show_spinner=False, suppress_st_warning=True)
 def generate_feed(data, query, civility_filter, diversity_filter, civility_threshold=None, selected_algo=None, query_comment=None):
@@ -59,12 +58,10 @@ def generate_feed(data, query, civility_filter, diversity_filter, civility_thres
     else:
         return unaltered_feed
 
-
 @st.cache(show_spinner=False)
 def run_classifier(text_input):
     classifier = CivilCommentsRunner("../civility/classifier/results/final_model")
     return classifier.run_model(text_input)
-
 
 @st.cache(show_spinner=False)
 def load_civility_data():
