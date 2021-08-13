@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
-import streamlit as st
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import pdist
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import util
 from collections import OrderedDict
-    
+
+
 def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
@@ -39,6 +39,7 @@ def get_similar_comments(embedder, dataset, corpus, sarcasm_embeddings, query, n
     df = df.join(dataset.set_index('comment'), on='Comment')
     return df, df_sim
 
+
 def calculate_quality(c, R, df, df_sim):
     """
     *add
@@ -52,7 +53,12 @@ def calculate_quality(c, R, df, df_sim):
     vector = np.array(df['vector'][df['Comment'] == c].to_numpy()[0]).reshape(1, -1)
     diversity = []
     for item in R:
-        diversity.append(1 - cosine_similarity(vector, np.array(df_sim['vector'][df_sim['Comment'] == item].to_numpy()[0]).reshape(1, -1)))
+        diversity.append(
+            1 - cosine_similarity(
+                vector,
+                np.array(df_sim['vector'][df_sim['Comment'] == item].to_numpy()[0]).reshape(1, -1)
+            )
+        )
         
     rel_diversity = sum(diversity)/len(R) # relative diversity
     
@@ -60,6 +66,7 @@ def calculate_quality(c, R, df, df_sim):
     
     quality = rel_diversity[0][0] * similarity # quality
     return quality
+
 
 def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_to_recommend):
     """
@@ -112,6 +119,7 @@ def greedy_selection(embedder, dataset, corpus, sarcasm_embeddings, query, num_t
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
+
 def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, n):
     """
     Parameters
@@ -136,12 +144,11 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
         bottom = df_ils.tail(len(df_ils) - i + 1)
         bottom = bottom[['Similarity']]
         for item in bottom.index:
-            rowData = bottom.loc[[item] , :]
-            top_n = top_n.append(rowData)
-            ils[item] = sum( [x for x in pdist(top_n)] ) / len(top_n) # ILS Calculation
-            top_n= top_n.drop(index=item)
-            
-    
+            row_data = bottom.loc[[item], :]
+            top_n = top_n.append(row_data)
+            ils[item] = sum([x for x in pdist(top_n)]) / len(top_n)  # ILS Calculation
+            top_n = top_n.drop(index=item)
+
     dissimilarity_rank = {k: v for k, v in sorted(ils.items(), key=lambda item: item[1], reverse=True)}
     
     # a,b ∈ [0,1]
@@ -177,10 +184,12 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
     pd.set_option("display.max_colwidth", 300)
     return df, df_sim
 
+
 def compute_diversity(df, n):
     dis_similarity = [x for x in pdist(df)]
     avg_dissim_greedy = (sum(dis_similarity))/((n/2)*(n-1))
     return avg_dissim_greedy
+
 
 def compare_diversity(avg_dissim_algo, avg_dissim_control):
     percent_change = ((avg_dissim_algo - avg_dissim_control)/avg_dissim_control)*100

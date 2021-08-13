@@ -1,9 +1,7 @@
 import streamlit as st
-import pandas as pd
-import torch
+
 from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
 from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification
-import time
 
 
 def demo():
@@ -51,17 +49,35 @@ def demo():
     # Diversity Filter
     st.subheader("Diversity Filter")
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
-    st.markdown("Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then implemented two diverity algorithms described below. Try out both and see how your recommendations change!")
+    st.markdown(
+        "Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then "
+        "implemented two diverity algorithms described below. Try out both and see how your recommendations change!"
+    )
     with st.expander("1. Bounded Greedy Algorithm"):
-        st.markdown("""This algorithm seeks to provide a more principled approach to improving diversity by using a “quality” metric to construct the recommendation set, R, in an incremental fashion. The quality of an item is proportional to its similarity to the target query and its relative diversity to the items so far selected. The first item to be selected is the one with the highest similarity to the target query. During each subsequent iteration, the item selected is the one with the highest quality with respect to the set of items selected during the previous iteration.  
-    To reduce the complexity, we implemented a bounded version in which we first select the top k items according to their similarity to the target query and apply the Greedy Selection method to these.""")
+        st.write(
+            """This algorithm seeks to provide a more principled approach to improving diversity by using a “quality” 
+            metric to construct the recommendation set, R, in an incremental fashion. The quality of an item is 
+            proportional to its similarity to the target query and its relative diversity to the items so far selected. 
+            The first item to be selected is the one with the highest similarity to the target query. During each 
+            subsequent iteration, the item selected is the one with the highest quality with respect to the set of 
+            items selected during the previous iteration.  
+    
+            To reduce the complexity, we implemented a bounded version in which we first select the top k items 
+            according to their similarity to the target query and apply the Greedy Selection method to these."""
+        )
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/greedy_pseudo.png")
     
     with st.expander("2. Topic Diversification Algorithm"):
-        st.markdown("""
-        This algorithm seeks to tackle the problem of diversifying the topics of books recommended to users; here, we apply it to Reddit comments. We first generate recommended items for the target query (at least 5N for the top-N final recommendations). For each N+1 position item, we calculate the ILS (intralist similarity) if this item was part of the top-N list. Then we sort the remaining items in reverse (according to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as r = a ∗ P + b ∗ Pd, with P being the original rank, Pd being the dissimilarity rank and a, b being constants in range [0, 1]. Lastly, we select the top-N items according to the newly calculated rank.
-        """)
+        st.write(
+            """This algorithm seeks to tackle the problem of diversifying the topics of books recommended to users; 
+            here, we apply it to Reddit comments. We first generate recommended items for the target query (at least 
+            5N for the top-N final recommendations). For each N+1 position item, we calculate the ILS (intralist 
+            similarity) if this item was part of the top-N list. Then we sort the remaining items in reverse (according
+             to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as r = a ∗ P + 
+             b ∗ Pd, with P being the original rank, Pd being the dissimilarity rank and a, b being constants in range 
+             [0, 1]. Lastly, we select the top-N items according to the newly calculated rank."""
+        )
         col1, col2, col3 = st.columns([1,1,1])
         col2.image("images/topic_pseudo.png")
         
@@ -82,21 +98,25 @@ def demo():
                 st.table(recommendations[0])
                 avg_dissim_algo = compute_diversity(recommendations[1], 6)
                 percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(percent_change) + "%")
+                st.text(
+                    f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
+                )
             else:
                 st.write("Recommendations computed with Topic Diversification:")
                 recommendations = topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query_comment, 6)
                 st.table(recommendations[0])
                 avg_dissim_algo = compute_diversity(recommendations[1], 6)
                 percent_change = compare_diversity(avg_dissim_algo, avg_dissim_control)
-                st.text("Compared to a normal recommender, this algorithm increased diversity by " + 
-                         str(percent_change) + "%")
-
+                st.text(
+                    f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
+                )
 
     # Applying filters to feed
     st.subheader("Putting It All Together")
-    st.write("To simulate the experience of Reddit user, we ask you to sign in as a user from the dataset and select a subreddit you want to     explore.")
+    st.write(
+        "To simulate the experience of Reddit user, we ask you to sign in as a user from the dataset and select a "
+        "subreddit you want to explore."
+    )
     st.write("In addition, we ask you to apply your filters and provide the number of posts you wish to see.")
     
     show_feed = False
@@ -114,20 +134,22 @@ def demo():
     diversity_filter = st.checkbox("Apply diversity filter")
 
     if civility_filter:
-        st.write(
+        civility_threshold = st.slider(
             "We envision online platforms where users have more control over what they see. Use the slider to change "
-            "the tolerance level of toxicity"
+            "your toxicity tolerance level.",
+            0.0,
+            1.0,
+            step=0.01,
+            value=0.5
         )
-        civility_threshold = st.slider("Set your tolerance level", 0.0, 1.0, step=0.01, value=0.5)
     if diversity_filter:
         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
         options = data['comment'].to_list()[:num_posts]
         selected_comment = st.selectbox("Choose a query comment", options)
     
     if st.button('Generate Feed'):
-            show_feed = True
+        show_feed = True
     
-    feed = None
     removed_from_feed = None
     
     query = {
@@ -137,43 +159,74 @@ def demo():
     }
 
     # Get feed
-    if show_feed == True:
+    if show_feed:
         if civility_filter and diversity_filter:
-            raise NotImplementedError("Done by mike and sheen")
+            with st.spinner("Generating civil and diverse feed..."):
+                feed, removed_from_feed, percent_change = generate_feed(
+                    data,
+                    query,
+                    civility_filter,
+                    diversity_filter,
+                    civility_threshold,
+                    selected_algo,
+                    selected_comment,
+                    embedder,
+                    dataset,
+                    corpus,
+                    sarcasm_embeddings
+                )
+            st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
+            feed = feed[["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]]
+            removed_from_feed = removed_from_feed[
+                ["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]
+            ]
         elif civility_filter:
-            feed, removed_from_feed = generate_feed(
-                data,
-                query,
-                civility_filter,
-                diversity_filter,
-                civility_threshold
-            )
+            with st.spinner("Generating civil feed..."):
+                feed, removed_from_feed = generate_feed(
+                    data,
+                    query,
+                    civility_filter,
+                    diversity_filter,
+                    civility_threshold
+                )
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "toxicity_score"]]
+                removed_from_feed = removed_from_feed[
+                    ["comment", "parent_comment", "author", "subreddit", "toxicity_score"]
+                ]
+
         elif diversity_filter:
-#             raise NotImplementedError("Done by sheen")
-            civility_threshold = None
-            feed, percent_change = generate_feed(
-                data,
-                query,
-                civility_filter,
-                diversity_filter,
-                civility_threshold,
-                selected_algo, 
-                selected_comment,
-                embedder, dataset, corpus, sarcasm_embeddings
-            )
-            st.text("Compared to a normal recommender, this algorithm increased diversity by " + str(percent_change) + "%")
+            with st.spinner("Generating diverse feed..."):
+                civility_threshold = None
+                feed, percent_change = generate_feed(
+                    data,
+                    query,
+                    civility_filter,
+                    diversity_filter,
+                    civility_threshold,
+                    selected_algo,
+                    selected_comment,
+                    embedder,
+                    dataset,
+                    corpus,
+                    sarcasm_embeddings
+                )
+            st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
+            feed = feed[["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score"]]
+            removed_from_feed = removed_from_feed[
+                ["Comment", "parent_comment", "author", "subreddit", "Rank", "ILS Score", "toxicity_score"]
+            ]
         else:
-            feed = generate_feed(
-                data,
-                query,
-                civility_filter,
-                diversity_filter
-            )
+            with st.spinner("Generating feed..."):
+                feed = generate_feed(
+                    data,
+                    query,
+                    civility_filter,
+                    diversity_filter
+                )
 
         st.write("")  # Blank space
         st.write("Here is your recommended feed:")
-        with st.spinner("Getting feed..."):
-            st.table(feed)
+        st.table(feed)
             
     if removed_from_feed is not None:
         st.write("What was filtered:")
