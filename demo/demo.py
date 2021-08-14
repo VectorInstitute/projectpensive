@@ -1,6 +1,6 @@
 import streamlit as st
 
-from helpers import load_recommender_data, generate_feed, run_classifier, load_civility_data, load_data
+from helpers import load_recommender_data, load_recommender_feed, generate_feed, run_classifier, load_civility_data, load_data
 from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
 
 
@@ -149,8 +149,16 @@ def demo():
     
     num_posts = st.slider("How many posts do you want to see?", 5, 100, value=6)
     
+    query = {
+        "author": user_name,
+        "subreddit": subreddit,
+        "num_posts": num_posts
+    }
+    
     civility_filter = st.checkbox("Apply civility filter")
     diversity_filter = st.checkbox("Apply diversity filter")
+    
+    unaltered_feed = load_recommender_feed(query, data)
 
     if civility_filter:
         civility_threshold = st.slider(
@@ -163,25 +171,20 @@ def demo():
         )
     if diversity_filter:
         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
-        options = data['comment'].to_list()[:num_posts]
+        options = unaltered_feed['comment'].to_list()[:num_posts]
         selected_comment = st.selectbox("Choose a query comment", options)
     
     if st.button('Generate Feed'):
         show_feed = True
     
     removed_from_feed = None
-    
-    query = {
-        "author": user_name,
-        "subreddit": subreddit,
-        "num_posts": num_posts
-    }
 
     # Get feed
     if show_feed:
         if civility_filter and diversity_filter:
             with st.spinner("Generating civil and diverse feed..."):
                 feed, removed_from_feed, percent_change = generate_feed(
+                    unaltered_feed,
                     data,
                     query,
                     civility_filter,
@@ -195,13 +198,25 @@ def demo():
                     sarcasm_embeddings
                 )
             st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
-            feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score", "toxicity_score"]]
-            removed_from_feed = removed_from_feed[
-                ["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score", "toxicity_score"]
-            ]
+            if selected_algo == diversity_algo_options[0]:
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "toxicity_score"]]
+                removed_from_feed = removed_from_feed[
+                    ["comment", "parent_comment", "author", "subreddit", "toxicity_score"]
+                ]
+            elif selected_algo == diversity_algo_options[1]:
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "similarity", "toxicity_score"]]
+                removed_from_feed = removed_from_feed[
+                    ["comment", "parent_comment", "author", "subreddit", "similarity", "toxicity_score"]
+                ]
+            else:
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS score", "toxicity_score"]]
+                removed_from_feed = removed_from_feed[
+                    ["comment", "parent_comment", "author", "subreddit", "rank", "ILS score", "toxicity_score"]
+                ]
         elif civility_filter:
             with st.spinner("Generating civil feed..."):
                 feed, removed_from_feed = generate_feed(
+                    unaltered_feed,
                     data,
                     query,
                     civility_filter,
@@ -217,6 +232,7 @@ def demo():
             with st.spinner("Generating diverse feed..."):
                 civility_threshold = None
                 feed, percent_change = generate_feed(
+                    unaltered_feed,
                     data,
                     query,
                     civility_filter,
@@ -230,11 +246,16 @@ def demo():
                     sarcasm_embeddings
                 )
             st.text(f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%")
-            feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS Score"]]
-
+            if selected_algo == diversity_algo_options[0]:
+                feed = feed[["comment", "parent_comment", "author", "subreddit"]]
+            elif selected_algo == diversity_algo_options[1]:
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "similarity"]]
+            else:
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS score"]]
         else:
             with st.spinner("Generating feed..."):
                 feed = generate_feed(
+                    unaltered_feed,
                     data,
                     query,
                     civility_filter,
