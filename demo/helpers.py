@@ -33,6 +33,7 @@ def load_recommender_data():
     data = data.drop(columns=['Unnamed: 0'])
     return data
 
+
 @st.cache(show_spinner=False)
 def load_recommender_feed(query, data):
     model = RecommenderEngineRunner("data/final_model", data, 500)
