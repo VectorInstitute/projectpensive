@@ -161,8 +161,14 @@ def demo():
     
     civility_filter = st.checkbox("Apply civility filter")
     diversity_filter = st.checkbox("Apply diversity filter")
-    
-    unaltered_feed = load_recommender_feed(query, data)
+
+    if st.button('Generate Feed'):
+        show_feed = True
+
+    if show_feed:
+        with st.spinner("Running Recommender Engine..."):
+            unaltered_feed = load_recommender_feed(query, data)
+            unaltered_feed = unaltered_feed.head(n=query["num_posts"])
     
     if civility_filter:
         civility_threshold = st.slider(
@@ -177,9 +183,6 @@ def demo():
         selected_algo = st.radio("Select a Diversity Algorithm", diversity_algo_options, index=0)
         options = unaltered_feed['comment'].to_list()[:num_posts]
         selected_comment = st.selectbox("Choose a query comment", options)
-    
-    if st.button('Generate Feed'):
-        show_feed = True
     
     removed_from_feed = None
 

@@ -38,7 +38,6 @@ def load_recommender_data():
 def load_recommender_feed(query, data):
     model = RecommenderEngineRunner("data/final_model", data, 500)
     unaltered_feed = model.run_model(query, data)
-    unaltered_feed = unaltered_feed.head(n=query["num_posts"])
     return unaltered_feed
 
 
