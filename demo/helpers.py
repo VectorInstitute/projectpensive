@@ -83,6 +83,7 @@ def generate_feed(
 
         for i, comment in unaltered_feed.comment.items():
             score = max(0, civil_filter.run_model(comment))
+            score = min(score, 1)
             if score > civility_threshold:
                 removed_from_feed = removed_from_feed.append(feed.loc[i])
                 removed_from_feed.at[i, "toxicity_score"] = round(score, 3)

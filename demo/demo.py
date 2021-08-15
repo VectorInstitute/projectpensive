@@ -1,7 +1,9 @@
 import streamlit as st
 
 from helpers import load_recommender_data, load_recommender_feed, generate_feed, run_classifier, load_civility_data, load_data
-from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
+from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, \
+    topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
+
 
 def demo():
     st.header("Demo")
@@ -15,7 +17,6 @@ def demo():
         data = load_recommender_data()
         st.table(data.head(n=3))
 
-        
     # Civility Filter
     st.subheader("Civility Filter")
     st.write(
@@ -30,6 +31,8 @@ def demo():
     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
         with st.spinner("Computing..."):
             output = run_classifier(text_input)
+            output = max(0, output)
+            output = min(output, 1)
             if output > 0.5:
                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
             else:
@@ -44,7 +47,6 @@ def demo():
                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
             else:
                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
-
                 
     # Diversity Filter
     st.subheader("Diversity Filter")
@@ -131,8 +133,7 @@ def demo():
             st.text(
                 f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
             )
-    
-    
+
     # Applying filters to feed
     st.subheader("Putting It All Together")
     st.write(
