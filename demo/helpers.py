@@ -81,7 +81,7 @@ def generate_feed(
         feed = feed.assign(toxicity_score=0.0)
         removed_from_feed = pd.DataFrame(columns=feed.columns)
 
-        for i, comment in unaltered_feed.comment.items():
+        for i, comment in feed.comment.items():
             score = max(0, civil_filter.run_model(comment))
             score = min(score, 1)
             if score > civility_threshold:
@@ -98,7 +98,7 @@ def generate_feed(
         feed = unaltered_feed.assign(toxicity_score=0.0)
         removed_from_feed = pd.DataFrame(columns=feed.columns)
 
-        for i, comment in unaltered_feed.comment.items():
+        for i, comment in feed.comment.items():
             score = max(0, civil_filter.run_model(comment))
             if score > civility_threshold:
                 removed_from_feed = removed_from_feed.append(feed.loc[i])
