@@ -14,10 +14,10 @@ def problem_framing():
         "and contributes to the increase in misinformation, polarization, depression, and disengagement."
     )
     st.write(
-        "The Vector Institute wishes to combat this problem. Our initial efforts surround building a tool that "
+        "The Vector Institute is tackling this problem. Our initial efforts surround building a tool that "
         "leverages NLP and Machine Learning to apply **deep** content analysis to boost or suppress content "
         "recommendations based on a user's preferences. Vector envisions a social media platform where the user has "
-        "control. They can apply various filters to their feed to enhance their own experience."
+        "control. They can apply various filters to their feed and enhance their own experience."
     )
     st.write(
         "Two such filters in development and presented today are our `Civility` and `Diversity` filters."
@@ -27,10 +27,18 @@ def problem_framing():
     st.subheader("Civility")
     with st.expander("Read more"):
         st.write(
-            "Media feeds can often populate with hateful and uncivil speech. Simply excluding profane content is an "
-            "unsatisfactory solution. Demoting content that provides valid points but contains mildly inappropriate "
-            "speech (swear words) is not ideal to every user. A more comprehensive solution assigns a toxicity score "
-            "to content and allows individuals to set their own tolerance level."
+            "It is an unfortunate reality that social media feeds often populate with hateful and uncivil speech. This "
+            "often leads to further aggression among users and takes focus away from the more meaningful discussion "
+            "and prosocial content. With the advances in NLP and Machine Learning, it is easier than ever to build "
+            "models that can analyze text and provide meaningful insights. Our `civility filter` empowers the "
+            "individual user to remove distasteful posts from their feeds."
+        )
+        st.write(
+            "Our filter does more than simply exclude profane content. Demoting content that provides valid points but "
+            "contains mildly inappropriate speech (swear words) is not ideal to every user. A more comprehensive "
+            "solution assigns a toxicity score to content and allows individuals to set their own tolerance level. "
+            "This approach maximizes feed customization while ensuring that users avoid content they are "
+            "uncomfortable viewing."
         )
 
     # Diversity
@@ -56,7 +64,8 @@ def problem_framing():
                 \n- Allows users to explore more of the platform
                 \n- Prevents the aforementioned “filter bubble” problem"""
         )
-        st.markdown(
-            "With the inclusion of diversity into the conversation of recommendation systems, we hope to **promote "
-            "prosocial behaviour** in online communities and increase **long-term user satisfaction**."
-        )
+
+    st.markdown(
+        "With the inclusion of `civility` and `diversity` into the conversation of recommendation systems, we hope to **promote "
+        "prosocial behaviour** in online communities and increase **long-term user satisfaction**."
+    )

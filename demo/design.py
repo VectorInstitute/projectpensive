@@ -3,6 +3,9 @@ import streamlit as st
 
 def design():
     st.header("Design")
+    st.write(
+        "The following section highlights the design of our filters, recommender, and how they interact as a system."
+    )
 
     # Civility Filter
     st.subheader("Civility Filter")
@@ -16,7 +19,7 @@ def design():
         st.write(
             "For each comment, provided is an assigned score (between 0 and 1) for the following categories: "
             "`toxicity`, `severe toxicity`, `threat`, `identity attack`, `sexually explicit`, `insult`, `obscene`. "
-            "These labels were taken as averages across several crowd workers."
+            "These labels were taken as averages across many crowd workers."
         )
         st.write(
             "Below is a preselected example:"
@@ -55,14 +58,14 @@ def design():
         )
         st.markdown(
             "`Hugging Face` is a popular deep learning platform for building, training, and deploying state of the art "
-            "NLP models. Its `transformers` library, formerly known as `pytorch-transformers`, is used to define the "
+            "NLP models. Its `transformers` library, formerly known as `pytorch-transformers`, is used to build the "
             "civility classifier model."
         )
         st.markdown(
-            "`PyTorch Lightning` is a research framework that can easily accelerate your `PyTorch` code. Among its other "
-            "benefits, it provides builtin functionality for multi-gpu training. This greatly reduced training of models "
-            "on the large `civil_comments` dataset from days to ~ a day. The framework provides several hooks that make it "
-            "easy to migrate from traditional `PyTorch` code to `Pytorch Lightning`. Examples of such hooks are:"
+            "`PyTorch Lightning` is a research framework that can accelerate your `PyTorch` code. Among its other "
+            "benefits, it provides builtin functionality for multi-GPU training. This greatly reduced training of models "
+            "on the large `civil_comments` dataset from days to hours. The framework provides several hooks that "
+            "ease to migration from traditional `PyTorch` code to `Pytorch Lightning`. Examples of such hooks are:"
         )
         st.code(
             "forward(), configure_optimizers(), training_step(), validation_step(), on_train_batch_end()"
@@ -109,20 +112,43 @@ def design():
             "relevant posts."
         )
         st.write(
-            "The model is composed of two sub-models, responsible for embedding representations of the queries and "
-            "comments. The outputs of the models are combined to assign a query-candidate affinity score. A higher "
-            "affinity score symbolizes a greater match between query and comment."
+            "The recommender is composed of two sub-models, responsible for computing representations of the queries and "
+            "comments. The outputs of the models are combined to assign a query-candidate affinity score. A greater "
+            "affinity score symbolizes a stronger match between query and comment."
         )
 
         st.write("**Tools Used**")
         st.write(
             "Building and training the Recommender Engine was done in `PyTorch`. Builtin support for building "
             "`Embedding` layers was done with `torch.nn.Embedding()`. Further implementations of this model should "
-            "use `Hugging Face` to build more meaningful text representations of the comments in the dataset."
+            "leverage `Hugging Face` to build more meaningful text representations of the comments in the dataset."
         )
 
     # Component Interaction
     st.subheader("Component Interaction")
+    with st.expander("Read more"):
+        st.write(
+            "Before any filters are applied, it is the recommender's job to analyze thousands of comments and rank "
+            "them based on their match to the input query. Once this is done, our filters can be applied. The "
+            "workflow following the initial recommendations depends on what combination of filters are used. If no "
+            "filters are used, the feed presented to the user is simply the first `n` posts of highest rank from the "
+            "recommender."
+        )
+
+        st.write(
+            "If the civility filter is selected, all recommended comments are processed through the civility "
+            "classifier and assigned a toxicity score. For each comment, if its score is higher than the tolerance "
+            "level selected by the user, it is dropped from the feed. Posts dropped can be seen below, in the `What "
+            "was filtered` section."
+        )
+        st.write(
+            "If the diversity filter is used, ... written by Sheen"
+        )
+        st.write(
+            "If the user wishes to apply both filters, comments provided by the recommender are suggested for use with "
+            "the diversity filter. The diversity filter provides a sequence of diverse posts, which are then processed "
+            "by the civility filter as they normally would."
+        )
 
     # References
     st.subheader("References")

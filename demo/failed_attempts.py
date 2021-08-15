@@ -3,6 +3,10 @@ import streamlit as st
 
 def failed_attempts():
     st.header("Failed Attempts")
+    st.write(
+        "It took several iterations to build the tools shown in this demo. The following shows the journey taken and "
+        "some of the work not seen in the previous sections."
+    )
 
     # Civility
     st.subheader("Civility")
@@ -51,3 +55,10 @@ def failed_attempts():
     st.subheader("Recommender Engine")
     with st.expander("Read more"):
         st.write("**TensorFlow Recommenders**")
+        st.markdown(
+            "[`TensorFlow Recommenders`](https://www.tensorflow.org/recommenders/) is a deep learning library for "
+            "building recommender systems. It is built on `Keras`, with all of its functionality exposed. We built our "
+            "first model using this library. When the model had trouble converging, especially when the dataset was "
+            "large, we migrated to a `PyTorch` version. This version was much easier to debug, and had more success "
+            "converging."
+        )

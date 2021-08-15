@@ -6,6 +6,7 @@ from design import design
 from evaluation import evaluation
 from failed_attempts import failed_attempts
 from next_steps import next_steps
+from conclusion import conclusion
 
 st.set_page_config(
     page_title="Project Pensive",
@@ -29,7 +30,7 @@ st.sidebar.header("Vector Institute: AI Engineering and Technology")
 st.sidebar.image("images/vector_logo.jpeg", width=300)
 sidebar = st.sidebar.selectbox(
     "Demo Section",
-    ("Problem Framing", "Design", "Demo", "Evaluation", "Failed Attempts", "Next Steps")
+    ("Problem Framing", "Design", "Demo", "Evaluation", "Failed Attempts", "Next Steps", "Conclusion")
 )
 
 if sidebar == "Problem Framing":
@@ -44,8 +45,12 @@ elif sidebar == "Failed Attempts":
     failed_attempts()
 elif sidebar == "Next Steps":
     next_steps()
+elif sidebar == "Conclusion":
+    conclusion()
 
-st.markdown(
-    "Made by [Michael Nasello](https://ca.linkedin.com/in/michael-nasello) and "
-    "[Sheen Thusoo](https://ca.linkedin.com/in/sheenthusoo): Applied Machine Learning Interns, Summer 2021"
-)
+if sidebar != "Conclusion":
+    st.write("")  # Blank line
+    st.markdown(
+        "Made by [Michael Nasello](https://ca.linkedin.com/in/michael-nasello) and "
+        "[Sheen Thusoo](https://ca.linkedin.com/in/sheenthusoo): Applied Machine Learning Interns, Summer 2021"
+    )
