@@ -3,10 +3,8 @@ import streamlit as st
 from helpers import load_recommender_data, load_recommender_feed, generate_feed, run_classifier, load_civility_data, load_data
 from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
 
-
 def demo():
     st.header("Demo")
-
     st.write(
         "As previously noted, we are working with the `Sarcastic Comments - REDDIT` dataset. These comments are "
         "provided as options to the Recommender as it generates a social media feed. Lets take a look at some "
@@ -17,6 +15,7 @@ def demo():
         data = load_recommender_data()
         st.table(data.head(n=3))
 
+        
     # Civility Filter
     st.subheader("Civility Filter")
     st.write(
@@ -46,8 +45,11 @@ def demo():
             else:
                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
+                
     # Diversity Filter
     st.subheader("Diversity Filter")
+    
+    # Comment Recommender
     st.markdown("#### Comment Recommender")
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown(
@@ -111,11 +113,12 @@ def demo():
                 st.text(
                     f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
                 )
-    
+                
+    # Subreddit Recommender
     st.markdown("#### Subreddit Recommender")
     subreddit_options = ["None", "AskReddit", "Coronavirus", "antivax", "DebateCommunism", "worldnews", "DebateReligion"]
     chosen_subreddit = st.selectbox("Choose a Subreddit", subreddit_options)
-#     st.table(subreddit_embeddings.head())
+
     if chosen_subreddit is not subreddit_options[0]:
         st.write("Recommendations computed with Bounded Greedy Selection:")
         with st.spinner("Computing..."):
@@ -129,7 +132,7 @@ def demo():
                 f"Compared to a normal recommender, this algorithm increased diversity by {percent_change}%"
             )
     
-
+    
     # Applying filters to feed
     st.subheader("Putting It All Together")
     st.write(
@@ -159,7 +162,7 @@ def demo():
     diversity_filter = st.checkbox("Apply diversity filter")
     
     unaltered_feed = load_recommender_feed(query, data)
-
+    
     if civility_filter:
         civility_threshold = st.slider(
             "We envision online platforms where users have more control over what they see. Use the slider to change "
@@ -179,7 +182,7 @@ def demo():
     
     removed_from_feed = None
 
-    # Get feed
+    # Generate feed
     if show_feed:
         if civility_filter and diversity_filter:
             with st.spinner("Generating civil and diverse feed..."):
