@@ -36,7 +36,7 @@ def load_recommender_data():
 
 @st.cache(show_spinner=False)
 def load_recommender_feed(query, data):
-    model = RecommenderEngineRunner("data/final_model", data, 500)
+    model = RecommenderEngineRunner("../civility/recommender/final_model", data, 500)
     unaltered_feed = model.run_model(query, data)
     return unaltered_feed
 
