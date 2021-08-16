@@ -11,10 +11,10 @@ def design():
     st.subheader("Civility Filter")
     with st.expander("Read more"):
         st.write("**The Dataset**")
-        st.write(
+        st.markdown(
             "The `civil_comments` dataset is an archive of the Civil Comments platform, a plugin for independent "
             "news sites. Public comments, gathered from ~50 news sites, were recorded from 2015 through 2017. When the "
-            "platform shut down, they archive was open-sourced [1]."
+            "platform shut down, they archive was open-sourced [[1]](https://huggingface.co/datasets/civil_comments)."
         )
         st.write(
             "For each comment, provided is an assigned score (between 0 and 1) for the following categories: "
@@ -42,7 +42,7 @@ def design():
             "To analyze text and assign a toxicity score, we leveraged a distilled version of `BERT` known as "
             "[`DistilBERT`](https://arxiv.org/abs/1910.01108). `DistilBERT` is designed to be smaller, faster, and "
             "cheaper. It is pretrained on the same data as `BERT`, but using `BERT` as its teacher in a "
-            "self-supervised manner [2]."
+            "self-supervised manner [[2]](https://huggingface.co/distilbert-base-uncased)."
         )
         st.write(
             "During training, the transformer section of the model is frozen. Parameter updates are only applied to the "
@@ -149,10 +149,3 @@ def design():
             "the diversity filter. The diversity filter provides a sequence of diverse posts, which are then processed "
             "by the civility filter as they normally would."
         )
-
-    # References
-    st.subheader("References")
-    st.markdown(
-        "1. https://huggingface.co/datasets/civil_comments"
-        "\n2. https://huggingface.co/distilbert-base-uncased"
-    )
