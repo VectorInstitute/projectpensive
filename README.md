@@ -13,7 +13,7 @@ Code for the civility filter can be found under `baiso/civility/classifier`. To 
 run `sbatch run.slurm`.  
 
 ## Diversity Filter
-Code for the diversity filter can be found under `baiso/diversity`. To generate subreddit embeddings, go to `basio/diversity/embeddings` and run the `subreddit2vec.ipynb` file. To generate comment emebddings, go to `basio/diversity/embeddings` and run the `sentencetransformers.ipynb` file.
+Code for the diversity filter can be found under `baiso/diversity`. To generate subreddit embeddings, go to `basio/diversity/embeddings` and run the `subreddit2vec.ipynb` file and to generate comment emebddings, run the `sentencetransformers.ipynb` file.
 
 ## Recommender Engine
 Code for the recommender engine can be found under `baiso/civility/recommender`. To train a recommender on the vaughan 
