@@ -4,17 +4,14 @@ import streamlit as st
 def evaluation():
     st.header("Evaluation")
     st.write(
-        "The following section shows the evaluation of the systems built for this project."
+        "The following section shows the evaluation of the tools built for this project."
     )
 
     # Civility
     st.subheader("Civility")
     with st.expander("Read more"):
-        # interesting examples
-        # eval against jigsaw
-        st.write("**Performance Comparison with Jigsaw Perspective**")
         st.markdown(
-            """To evaluate the model, we will compare its performance with the [Jigsaw Perspective API]
+            """To evaluate our civility filter, we will compare its performance with the [Jigsaw Perspective API]
             (https://www.perspectiveapi.com/). The Jigsaw Perspective tool is built by [Conversation AI]
             (https://conversationai.github.io/), the maintainers of our `civil_comments` dataset."""
         )
@@ -38,9 +35,9 @@ def evaluation():
         )
         st.code(
             "Jigsaw:"
-            "\n\tPrecision: 0.951, Recall: 0.913, F1: 0.926"
+            "\n\tPrecision: 0.957, Recall: 0.923, F1: 0.934"
             "\nModel:"
-            "\n\tPrecision: 0.934, Recall: 0.938, F1: 0.936"
+            "\n\tPrecision: 0.931, Recall: 0.936, F1: 0.933"
         )
         st.markdown(
             "As can be seen, our transformer model is achieving similar performance. Unfortunately, Jigsaw's model is "
@@ -49,18 +46,7 @@ def evaluation():
             "versions of `BERT`."
         )
 
-        st.write("**Interesting Examples**")
-
     # Diversity
     st.subheader("Diversity")
     with st.expander("Read more"):
         st.write("Written by Sheen")
-
-    # Recommender
-    st.subheader("Recommender Engine")
-    with st.expander("Read more"):
-        # interesting examples
-        # mention that not limited to subreddit in query
-        st.write(
-            ""
-        )

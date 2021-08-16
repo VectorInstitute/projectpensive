@@ -112,6 +112,11 @@ def design():
             "relevant posts."
         )
         st.write(
+            "It is important to note that the recommender was not designed to only suggest comments "
+            "from `subreddit y`. Due to the sparsity of the dataset, the decision was made to allow comments from "
+            "other subreddits. The idea is that these other comments should be relevant to the user or subreddit."
+        )
+        st.write(
             "The recommender is composed of two sub-models, responsible for computing representations of the queries and "
             "comments. The outputs of the models are combined to assign a query-candidate affinity score. A greater "
             "affinity score symbolizes a stronger match between query and comment."

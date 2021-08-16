@@ -138,9 +138,8 @@ def demo():
     st.subheader("Putting It All Together")
     st.write(
         "To simulate the experience of Reddit user, we ask you to sign in as a user from the dataset and select a "
-        "subreddit you want to explore."
+        "subreddit. In addition, we ask you to apply your filters and provide the number of posts you wish to see."
     )
-    st.write("In addition, we ask you to apply your filters and provide the number of posts you wish to see.")
     
     show_feed = False
     
