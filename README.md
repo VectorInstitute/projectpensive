@@ -8,6 +8,22 @@ To get started:
 2. Install code packages: `python setup.py install`
 3. Install package dependencies: `pip install -r requirements.txt`
 
+
+## Data Download
+To run any training programs or demos, you will need to download the data. Assuming you have a Kaggle account, go to 
+[the dataset](https://www.kaggle.com/sherinclaudia/sarcastic-comments-on-reddit) and download the zip file. Unzip and 
+move the csv file to `baiso/civility/recommender/train-balanced-sarcasm.csv`. Once this is done, traverse to 
+`baiso/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
+to run experiments and the demo.
+
+## Model Checkpoints
+If you want to run the demo, you will need model checkpoints for the civility filter and the recommender. You will also
+need precomputed embeddings for the diversity filter.
+
+You can either train the filters yourself (see Civility Filter and Recommender Engine sections) or download the 
+checkpoints from the server. To acquire the precomputed embeddings for the diversity filter, see the Diversity Filter
+section.
+
 ## Civility Filter
 Code for the civility filter can be found under `baiso/civility/classifier`. To train a model on the vaughan server, 
 run `sbatch run.slurm`.  
