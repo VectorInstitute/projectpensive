@@ -9,7 +9,6 @@ async-generator==1.10
 async-timeout==3.0.1
 attrs==21.2.0
 backcall==0.2.0
--e git+https://github.com/VectorInstitute/baiso.git@ac93a0097d0602b461773401328517363862f727#egg=BAISO
 base58==2.1.0
 bleach==3.3.0
 blinker==1.4
