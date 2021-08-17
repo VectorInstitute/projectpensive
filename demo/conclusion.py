@@ -11,7 +11,7 @@ def conclusion():
         """
         If you have comment, questions, or concerns, you can reach out to the:
         \n1. Developers of this demo: [Michael Nasello](mailto:mlnasell@uwaterloo.ca) and [Sheen Thusoo]
-        (mailto:blank@uwaterloo.ca)
+        (mailto:sheenthusoo@gmail.com)
         \n2. Vector's AI Engineering and Technology team, via their [group email]
         (mailto:ai_engineering@vectorinstitute.ai)
         """

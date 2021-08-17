@@ -11,7 +11,7 @@ def next_steps():
     st.subheader("Civility")
     with st.expander("Read more"):
         st.write(
-            "If given more time, there are two things we would attempt to improve the civility filter."
+            "Given more time, there are two things we would attempt to improve the civility filter."
         )
         st.write(
             "A boost in model performance would improve the overall quality of the filter. This could be achieved via "
@@ -34,7 +34,18 @@ def next_steps():
     # Diversity
     st.subheader("Diversity")
     with st.expander("Read more"):
-        st.write("Written by Sheen")
+        st.write("Given more time, there are two things we would attempt to improve the diversity filter.")
+        st.write('**Embeddings**')
+        st.write("""The embeddings for both subreddits and comments were generated using limited techniques - Word2Vec skip-gram and SentenceTransformer models, respectively. For subreddits, other embeddings models should be explored and evaluated such as the `Continuous Bag-of-words` model in Word2Vec which takes the context words as input and predicts the center word within the window; `Glove` embedding, which is an unsupervised algorithm trained on global word-word co-occurence statistics leading to meaningful linear substructures in the word-vector space; `FastText`, which is pre-trained on English webcrawl and Wikipedia; and `ELMO`, which uses a deep bidirectional language model.
+       """)
+        st.write("""For comments, other pre-trained SentenceTransformer models should be compared such as `paraphrase-mpnet-base-v2`, `paraphrase-MiniLM-L12-v2`, and `paraphrase-TinyBERT-L6-v2`. 
+        As well, other sentence embedding models should be trained including `InferSent`, created by Facebook and used to generate semantic sentence representations; and `Universal Sentence Encoder`, which encodes text into high dimensional vectors that can be used for text classification, semantic similarity, and clustering.
+        The failed `Doc2Vec` implementation should also be further investigated and improved with fine tuning and hyperparameter optimization.
+        """)
+        st.write('**Diversity Algorithms**')
+        st.write("""Given the limited time, we were only able to implement three diversity algorithms. However, there are many more that should be explored in the future as listed and described in [*Diversity in recommender systems – A survey*](https://papers-gamma.link/static/memory/pdfs/153-Kunaver_Diversity_in_Recommender_Systems_2017.pdf). 
+        Further, the diversity algorithms implemented were ones that had already developed by other researchers. Given more time, we could have explored ways to improve the existing algorithms and even perhaps create a novel technique to diversify recommendations.
+        """)
 
     # Recommender
     st.subheader("Recommender Engine")

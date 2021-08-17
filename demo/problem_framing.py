@@ -50,8 +50,8 @@ def problem_framing():
             quickly. Recommendation systems were developed to combat this problem by selecting items a user may 
             appreciate based on their past preferences or demographic information. Traditionally, the focus of these 
             systems has been to optimize the accuracy of the recommendations presented to the user leading to a 
-            concentration of highly accurate, but **overly narrow** set of results. This often traps users in a 
-            *“filter bubble”* where a user only encounters information and opinions that conform and reinforce their 
+            concentration of highly accurate, but **overly narrow** set of results. This often traps users in a so-called
+            `filter bubble` where they only encounter information and opinions that conform and reinforce their 
             own beliefs. This situation may seem innocuous, however it has been found to fuel issues such as 
             misinformation, unscientific propaganda, conspiracy theories and radical beliefs that have led to 
             real-world violence."""
@@ -60,10 +60,11 @@ def problem_framing():
             """To combat this growing issue, our focus is to generate recommendations that concentrate on real user 
             experience, specifically increasing the diversity of content that a user views and engages with. Content 
             diversity has many benefits:
-                \n- It has been shown to increase user satisfaction
+                \n- Increases user satisfaction
                 \n- Allows users to explore more of the platform
-                \n- Prevents the aforementioned “filter bubble” problem"""
+                \n- Prevents the aforementioned `filter bubble` problem"""
         )
+        st.markdown("Rather than focusing on short-term satisfaction metrics such as click-through rates, our `diversity filter` will focus on the diversity metric which helps users consciously widen the scope of the information they digest.")
 
     st.markdown(
         "With the inclusion of `civility` and `diversity` into the conversation of recommendation systems, we hope to **promote "

@@ -49,8 +49,18 @@ def failed_attempts():
     # Diversity
     st.subheader("Diversity")
     with st.expander("Read more"):
-        st.write("Written by Sheen")
-
+        st.write("**Doc2Vec Implementation**")
+        st.write("""
+        The first sentence embedding model implemented was the `Doc2Vec` model which is an unsupervised algorithm that learns fixed-length feature representations from variable-length pieces of texts, such as sentences, paragraphs, and documents. The model was trained on the Sarcastic Comments dataset, however its performance, evaluated by eye, fell short compared to the pretrained SentenceTransformers model. Perhaps in the future, the model should be fine tuned and trained on a larger dataset to improve accuracy.
+        """)
+        st.write("**Total Diversity Effect (TDE) Ranking Algorithm**")
+        st.write("""
+        A third diversity algorithm implemented was Total Diversity Effect Ranking which improves the overall recommendation diversity by considering the diversity effect of each item on the final recommendation list. This involves first generating a list of the Top N+S recommendations (N between 3 and 10; S between 1 and 10). Then, calculating the TDE of each item as the sum of distances to all other (N+S-1) items on the list. Lastly, removing S items with the lowest TDE score and generating the Top N recommendations for the current user. When implemented, this algorithm increased the diversity of the result-set from the original target query, but did not also increase the diversity of recommendations within the result-set which is an important metric. 
+        """)
+        st.latex('''
+        TDE(c_i) = \sum_{i=1..L} dist(c_i, c_j) ; \quad i ≠ j, c_i, c_j, \in L
+        ''')
+        
     # Recommender
     st.subheader("Recommender Engine")
     with st.expander("Read more"):

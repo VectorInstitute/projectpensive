@@ -18,35 +18,35 @@ def demo():
         st.table(data.head(n=3))
 
     # Civility Filter
-    st.subheader("Civility Filter")
-    st.write(
-        "We leverage the `Hugging Face transformer` library to train transformer based NLP models on the "
-        "`civil_comments` dataset. A score is assigned to convey the level of civility present in a post."
-    )
-    st.write(
-        "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
-    )
+#     st.subheader("Civility Filter")
+#     st.write(
+#         "We leverage the `Hugging Face transformer` library to train transformer based NLP models on the "
+#         "`civil_comments` dataset. A score is assigned to convey the level of civility present in a post."
+#     )
+#     st.write(
+#         "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
+#     )
 
-    text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
-    if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
-        with st.spinner("Computing..."):
-            output = run_classifier(text_input)
-            output = max(0, output)
-            output = min(output, 1)
-            if output > 0.5:
-                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-            else:
-                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+#     text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
+#     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
+#         with st.spinner("Computing..."):
+#             output = run_classifier(text_input)
+#             output = max(0, output)
+#             output = min(output, 1)
+#             if output > 0.5:
+#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+#             else:
+#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
-    civil_dataset_options = load_civility_data()
-    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
-    if select_text:
-        with st.spinner("Computing..."):
-            output = run_classifier(text_input)
-            if output > 0.5:
-                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-            else:
-                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+#     civil_dataset_options = load_civility_data()
+#     select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
+#     if select_text:
+#         with st.spinner("Computing..."):
+#             output = run_classifier(text_input)
+#             if output > 0.5:
+#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+#             else:
+#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
                 
     # Diversity Filter
     st.subheader("Diversity Filter")
@@ -66,11 +66,22 @@ def demo():
             The first item to be selected is the one with the highest similarity to the target query. During each 
             subsequent iteration, the item selected is the one with the highest quality with respect to the set of 
             items selected during the previous iteration.  
-    
             To reduce the complexity, we implemented a bounded version in which we first select the top k items 
             according to their similarity to the target query and apply the Greedy Selection method to these."""
         )
-        col1, col2, col3 = st.columns([1,1,1])
+        st.latex(r''' 
+        Quality(t,c,R) = Similarity(t,c) * RelDiversity(c, R)
+        ''')
+        st.latex(r''' 
+        RelDiversity(c,R) =
+        \left\{
+            \begin{array}{ll}
+                1 \quad  if \quad  R = \{\}; \\
+                \frac{\sum_{i=1..m}(1 - Similarity(c, r_i))} {m} , otherwise
+            \end{array}
+        \right.
+        ''')
+        col1, col2, col3 = st.columns([0.6,1,0.6])
         col2.image("images/greedy_pseudo.png")
     
     with st.expander("2. Topic Diversification Algorithm"):
@@ -79,11 +90,13 @@ def demo():
             here, we apply it to Reddit comments. We first generate recommended items for the target query (at least 
             5N for the top-N final recommendations). For each N+1 position item, we calculate the ILS (intralist 
             similarity) if this item was part of the top-N list. Then we sort the remaining items in reverse (according
-             to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as r = a ∗ P + 
-             b ∗ Pd, with P being the original rank, Pd being the dissimilarity rank and a, b being constants in range 
+             to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as defined in the equation below, with P being the original rank, Pd being the dissimilarity rank and a, b being constants in range 
              [0, 1]. Lastly, we select the top-N items according to the newly calculated rank."""
         )
-        col1, col2, col3 = st.columns([1,1,1])
+        st.latex(r''' 
+        r = (a * P) + (b * P_d), \quad a,b \in [0,1]
+        ''')
+        col1, col2, col3 = st.columns([0.6,1,0.6])
         col2.image("images/topic_pseudo.png")
         
     embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings = load_data()
