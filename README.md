@@ -15,7 +15,7 @@ To run any training programs or demos, you will need to download the data. Assum
 [the dataset](https://www.kaggle.com/sherinclaudia/sarcastic-comments-on-reddit) and download the zip file. Unzip and 
 move the csv file to `baiso/civility/recommender/train-balanced-sarcasm.csv`. Once this is done, traverse to 
 `baiso/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
-to run experiments and the demo.
+to run experiments and the demo. Another dataset that needs to be downloaded can be found [here](https://www.kaggle.com/timschaum/subreddit-recommender). Unzip this file and move to the `baiso/diversity` folder. Follow the instructionss under the Diversity Filter section below to correctly preprocess the data.
 
 #### Model Checkpoints
 If you want to run the demo, you will need model checkpoints for the civility filter and the recommender. You will also
