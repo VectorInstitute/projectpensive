@@ -19,7 +19,7 @@ move the csv file to `baiso/civility/recommender/train-balanced-sarcasm.csv`. On
 `baiso/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
 to run experiments and the demo. Another dataset that needs to be downloaded can be found 
 [here](https://www.kaggle.com/timschaum/subreddit-recommender). Unzip this file and move to 
-`baiso/diversity/reddit_user_data_count.csv`. Follow the instructions under the Diversity Filter section below to 
+`baiso/diversity/datasets/reddit_user_data_count.csv`. Follow the instructions under the Diversity Filter section below to 
 correctly preprocess the data.
 
 #### Model Checkpoints
@@ -34,8 +34,7 @@ Code for the civility filter can be found under `baiso/civility/classifier`. To 
 
 #### Diversity Filter
 Code for the diversity filter can be found under `baiso/diversity`. To generate subreddit embeddings, go to 
-`basio/diversity/embeddings` and run the `subreddit2vec.ipynb` file and to generate comment embeddings, run the 
-`sentencetransformers.ipynb` file.
+`basio/diversity/embeddings` and run the `subreddit2vec.ipynb` file. Once you have generated the `vectors.tsv` and `metadata.tsv` files and ensured that they are in the `datasets` folder, run `basio/diversity/generate-subreddit-dataframe.py`. To generate comment embeddings, run the `generate-comment-embeddings.py` file.
 
 #### Recommender Engine
 Code for the recommender engine can be found under `baiso/civility/recommender`. To train a recommender, run 
