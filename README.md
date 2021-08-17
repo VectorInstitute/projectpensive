@@ -8,6 +8,8 @@ To get started:
 2. Install code packages: `python setup.py install`
 3. Install package dependencies: `pip install -r requirements.txt`
 
+NOTE: This code was written in Python 3.7. It is recommender to use Python 3.7 or newer.
+
 
 ## External to Vector
 ### Data Download
