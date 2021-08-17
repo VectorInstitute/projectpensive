@@ -18,7 +18,7 @@ To run any training programs or demos, you will need to download the data. Assum
 move the csv file to `baiso/civility/recommender/train-balanced-sarcasm.csv`. Once this is done, traverse to 
 `baiso/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
 to run experiments and the demo. Another dataset that needs to be downloaded can be found 
-[here](https://www.kaggle.com/timschaum/subreddit-recommender). Unzip this file and move to 
+[here](https://www.kaggle.com/timschaum/subreddit-recommender). Unzip this file, create a folder under diversity `diversity/datasets` and add the file there as
 `baiso/diversity/datasets/reddit_user_data_count.csv`. Follow the instructions under the Diversity Filter section below to 
 correctly preprocess the data.
 
