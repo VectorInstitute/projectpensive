@@ -18,35 +18,35 @@ def demo():
         st.table(data.head(n=3))
 
     # Civility Filter
-#     st.subheader("Civility Filter")
-#     st.write(
-#         "We leverage the `Hugging Face transformer` library to train transformer based NLP models on the "
-#         "`civil_comments` dataset. A score is assigned to convey the level of civility present in a post."
-#     )
-#     st.write(
-#         "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
-#     )
+    st.subheader("Civility Filter")
+    st.write(
+        "We leverage the `Hugging Face transformer` library to train transformer based NLP models on the "
+        "`civil_comments` dataset. A score is assigned to convey the level of civility present in a post."
+    )
+    st.write(
+        "To try out the civility classifier, write your own comments, or select from some examples from the dataset."
+    )
 
-#     text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
-#     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
-#         with st.spinner("Computing..."):
-#             output = run_classifier(text_input)
-#             output = max(0, output)
-#             output = min(output, 1)
-#             if output > 0.5:
-#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-#             else:
-#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+    text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
+    if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
+        with st.spinner("Computing..."):
+            output = run_classifier(text_input)
+            output = max(0, output)
+            output = min(output, 1)
+            if output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            else:
+                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
 
-#     civil_dataset_options = load_civility_data()
-#     select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
-#     if select_text:
-#         with st.spinner("Computing..."):
-#             output = run_classifier(text_input)
-#             if output > 0.5:
-#                 st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
-#             else:
-#                 st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+    civil_dataset_options = load_civility_data()
+    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
+    if select_text:
+        with st.spinner("Computing..."):
+            output = run_classifier(text_input)
+            if output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            else:
+                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
                 
     # Diversity Filter
     st.subheader("Diversity Filter")
