@@ -4,7 +4,7 @@ import streamlit as st
 def evaluation():
     st.header("Evaluation")
     st.write(
-        "The following section shows the evaluation of the tools built for this project."
+        "The following section shows the evaluation of the filters built for this project."
     )
 
     # Civility
@@ -65,7 +65,7 @@ def evaluation():
             "\n\tScore: 0.6410"
         )
 
-        st.write("Below is an interesting (and concerning) edge case")
+        st.write("Below is an interesting (and concerning) edge case.")
         st.code(
             "Text: 'Thankfully not into the gas pump behind the dangerous negr- I mean black man.'"
             "\nScore: 0.2260"
@@ -74,7 +74,7 @@ def evaluation():
             "The above text is clearly uncivil and should receive a much higher toxicity score. It is suspected that "
             "this is not the case because the 'negr' term is not recognized by the model tokenizer. Even without the "
             "slur, this sentence should have a higher toxicity score. More work is needed to improve the filter, and "
-            "they are outlined in the `Next Steps` section of this demo."
+            "some steps are outlined in the `Next Steps` section of this demo."
         )
 
     # Diversity

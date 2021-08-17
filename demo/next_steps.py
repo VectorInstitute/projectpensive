@@ -36,31 +36,49 @@ def next_steps():
     with st.expander("Read more"):
         st.write("Given more time, there are two things we would attempt to improve the diversity filter.")
         st.write('**Embeddings**')
-        st.write("""The embeddings for both subreddits and comments were generated using limited techniques - Word2Vec skip-gram and SentenceTransformer models, respectively. For subreddits, other embeddings models should be explored and evaluated such as the `Continuous Bag-of-words` model in Word2Vec which takes the context words as input and predicts the center word within the window; `Glove` embedding, which is an unsupervised algorithm trained on global word-word co-occurence statistics leading to meaningful linear substructures in the word-vector space; `FastText`, which is pre-trained on English webcrawl and Wikipedia; and `ELMO`, which uses a deep bidirectional language model.
-       """)
-        st.write("""For comments, other pre-trained SentenceTransformer models should be compared such as `paraphrase-mpnet-base-v2`, `paraphrase-MiniLM-L12-v2`, and `paraphrase-TinyBERT-L6-v2`. 
-        As well, other sentence embedding models should be trained including `InferSent`, created by Facebook and used to generate semantic sentence representations; and `Universal Sentence Encoder`, which encodes text into high dimensional vectors that can be used for text classification, semantic similarity, and clustering.
-        The failed `Doc2Vec` implementation should also be further investigated and improved with fine tuning and hyperparameter optimization.
-        """)
+        st.write(
+            """The embeddings for both subreddits and comments were generated using limited techniques - Word2Vec 
+            skip-gram and SentenceTransformer models, respectively. For subreddits, other embeddings models should be 
+            explored and evaluated such as the `Continuous Bag-of-words` model in Word2Vec which takes the context 
+            words as input and predicts the center word within the window; `Glove` embedding, which is an unsupervised 
+            algorithm trained on global word-word co-occurence statistics leading to meaningful linear substructures 
+            in the word-vector space; `FastText`, which is pre-trained on English webcrawl and Wikipedia; and `ELMO`, 
+            which uses a deep bidirectional language model."""
+        )
+        st.write(
+            """For comments, other pre-trained SentenceTransformer models should be compared such as 
+            `paraphrase-mpnet-base-v2`, `paraphrase-MiniLM-L12-v2`, and `paraphrase-TinyBERT-L6-v2`. As well, other 
+            sentence embedding models should be trained including `InferSent`, created by Facebook and used to generate 
+            semantic sentence representations; and `Universal Sentence Encoder`, which encodes text into high 
+            dimensional vectors that can be used for text classification, semantic similarity, and clustering. The 
+            failed `Doc2Vec` implementation should also be further investigated and improved with fine tuning and 
+            hyperparameter optimization."""
+        )
         st.write('**Diversity Algorithms**')
-        st.write("""Given the limited time, we were only able to implement three diversity algorithms. However, there are many more that should be explored in the future as listed and described in [*Diversity in recommender systems – A survey*](https://papers-gamma.link/static/memory/pdfs/153-Kunaver_Diversity_in_Recommender_Systems_2017.pdf). 
-        Further, the diversity algorithms implemented were ones that had already developed by other researchers. Given more time, we could have explored ways to improve the existing algorithms and even perhaps create a novel technique to diversify recommendations.
-        """)
+        st.write(
+            """Given the limited time, we were only able to implement three diversity algorithms. However, there are 
+            many more that should be explored in the future as listed and described in [*Diversity in recommender 
+            systems – A survey*]
+            (https://papers-gamma.link/static/memory/pdfs/153-Kunaver_Diversity_in_Recommender_Systems_2017.pdf). 
+            Further, the diversity algorithms implemented were ones that had already developed by other researchers. 
+            Given more time, we could have explored ways to improve the existing algorithms and even perhaps create a 
+            novel technique to diversify recommendations."""
+        )
 
     # Recommender
     st.subheader("Recommender Engine")
     with st.expander("Read more"):
         st.write(
-            "There are several ways to improve and increase the robustness of the current Recommender."
+            "There are several ways to improve and increase the robustness of the current recommender."
         )
         st.write(
-            "First improvement is adding more input query structures. Currently, a query consists of an author and "
+            "First improvement involves adding more input query structures. Currently, a query consists of an author and "
             "subreddit. This can be extended to support combinations of queries with authors, subreddits, comments, "
-            "and others. Functionality to recommend authors and subreddits is another route to take."
+            "and others. Functionality to recommend authors and subreddits is another option to consider implementing."
         )
         st.write(
             "Another improvement builds more meaningful representations of comments. The implementation shown today "
             "encodes the comments into a lookup table. Even though this scheme works and provides good "
-            "recommendations, it would be ideal to compute more meaningful word embeddings. This change would most "
-            "likely result in even better comment recommendations."
+            "recommendations, it would be ideal to compute more meaningful word embeddings. This change would likely "
+            "result in better comment recommendations."
         )
