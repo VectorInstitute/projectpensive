@@ -14,7 +14,7 @@ def design():
         st.markdown(
             "The `civil_comments` dataset is an archive of the Civil Comments platform, a plugin for independent "
             "news sites. Public comments, gathered from ~50 news sites, were recorded from 2015 through 2017. When the "
-            "platform shut down, they archive was open-sourced [[1]](https://huggingface.co/datasets/civil_comments)."
+            "platform shut down, the archive was open-sourced [[1]](https://huggingface.co/datasets/civil_comments)."
         )
         st.write(
             "For each comment, provided is an assigned score (between 0 and 1) for the following categories: "
@@ -76,17 +76,38 @@ def design():
     with st.expander("Read more"):
         st.write("**Generating Subreddit Embeddings**")
         st.markdown("""
-        In order to embed the subreddits into a latent space representation, a `Subreddit2Vec` model was developed which is based on the Word2Vec model. The underlying intuition behind Word2Vec is that two words are similar if they are used in similar ways. While there are various implementations of Word2Vec, we will focus on the `Skip-gram model` which goes through each word in the text corpus and tries to predict n words on either side of it, referred to as the context. This context of a word can be represented through a set of `skip-gram pairs` of (target_word, context_word). The training objective of the skip-gram model is to maximize the probability of predicting context words given the target word [[1]](https://www.tensorflow.org/tutorials/text/word2vec). 
+        In order to embed the subreddits into a latent space representation, a `Subreddit2Vec` model was developed 
+        which is based on the Word2Vec model. The underlying intuition behind Word2Vec is that two words are similar 
+        if they are used in similar ways. While there are various implementations of Word2Vec, we will focus on the 
+        `Skip-gram model` which goes through each word in the text corpus and tries to predict n words on either side 
+        of it, referred to as the context. This context of a word can be represented through a set of 
+        `skip-gram pairs` of (target_word, context_word). The training objective of the skip-gram model is to 
+        maximize the probability of predicting context words given the target word 
+        [[1]](https://www.tensorflow.org/tutorials/text/word2vec). 
         
-        In this case, we use a Subreddit2Vec model to generate subreddit embeddings rather than word embeddings. We apply the Word2Vec algorithm on interaction data by `treating subreddits as "words" and the users that comment on them as "contexts"` - every instance of a user commenting in a subreddit then becomes a word-context, or subreddit-user, pair. Then, two subreddits are similar if and only if many similar users have the time and interest to comment in them both [[2]](https://www.cs.toronto.edu/~ashton/pubs/cultural-dims2020.pdf).
+        In this case, we use a Subreddit2Vec model to generate subreddit embeddings rather than word embeddings. We 
+        apply the Word2Vec algorithm on interaction data by `treating subreddits as "words" and the users that comment 
+        on them as "contexts"` - every instance of a user commenting in a subreddit then becomes a word-context, or 
+        subreddit-user, pair. Then, two subreddits are similar if and only if many similar users have the time and 
+        interest to comment in them both [[2]](https://www.cs.toronto.edu/~ashton/pubs/cultural-dims2020.pdf).
         """)
         st.write("**Generating Comment Embeddings**")
         st.markdown("""
-        The comments were embedded using the [SentenceTransformers](https://www.sbert.net/) framework which can be used to compute sentence/text embeddings for over 100 languages. These embeddings can then be compared e.g. with cosine-similarity to find sentences with a similar meaning. This can be useful for semantic textual similar, semantic search, or paraphrase mining. There are various pretrained models available for use. In our application of embedding Reddit comments, we made use of `paraphrase-MiniLM-L6-v2` which is a quick model with high quality.
+        The comments were embedded using the [SentenceTransformers](https://www.sbert.net/) framework which can be 
+        used to compute sentence/text embeddings for over 100 languages. These embeddings can then be compared e.g. 
+        with cosine-similarity to find sentences with a similar meaning. This can be useful for semantic textual 
+        similar, semantic search, or paraphrase mining. There are various pretrained models available for use. In our 
+        application of embedding Reddit comments, we made use of `paraphrase-MiniLM-L6-v2` which is a quick model with 
+        high quality.
         """)
         
         st.write('**Diversity Algorithms**')
-        st.markdown('These subreddit and comment embeddings were used to diversify the recommendations generated. Specifically, two diversity algorithms, `Bounded Greedy Selection` and `Topic Diversification` are implemented. These algorithms use the cosine similarities of the vectors to compare items. The algorithms are further detailed in the *Demo* section.')
+        st.markdown(
+            'These subreddit and comment embeddings were used to diversify the recommendations generated. '
+            'Specifically, two diversity algorithms, `Bounded Greedy Selection` and `Topic Diversification` are '
+            'implemented. These algorithms use the cosine similarities of the vectors to compare items. The algorithms '
+            'are further detailed in the *Demo* section.'
+        )
 
     # Recommender
     st.subheader("Recommender Engine")
