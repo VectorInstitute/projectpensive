@@ -10,6 +10,7 @@ def evaluation():
     # Civility
     st.subheader("Civility")
     with st.expander("Read more"):
+        st.write("**Comparison with Jigsaw**")
         st.markdown(
             """To evaluate our civility filter, we will compare its performance with the [Jigsaw Perspective API]
             (https://www.perspectiveapi.com/). The Jigsaw Perspective tool is built by [Conversation AI]
@@ -44,6 +45,36 @@ def evaluation():
             "not open source, and we cannot compare model sizes. However, [they state]"
             "(https://developers.perspectiveapi.com/s/about-the-api-model-cards) that they are using a distilled "
             "versions of `BERT`."
+        )
+
+        st.write("**Interesting Examples**")
+        st.write(
+            "Lets take a look at some interesting examples. The civility filter is not perfect, but performs well over "
+            "the entirety of the dataset."
+        )
+        st.code(
+            "Low Toxicity Example"
+            "\n\tText: 'Well, at least the democratic nomination race will be over Tuesday.'"
+            "\n\tScore: 0.0000"
+            "\nMedium Toxicity Example"
+            "\n\tText: 'They forgot to add the major fuck ups, blow its, and legal troubles that have plagued the "
+            "conman for decades.-- Whats up with that?'"
+            "\n\tScore: 0.4630"
+            "\nHigh Toxicity Example"
+            "\n\tText: 'Oh bully, its really a shame that not more parties in Germany a racist shitfests'"
+            "\n\tScore: 0.6410"
+        )
+
+        st.write("Below is an interesting (and concerning) edge case")
+        st.code(
+            "Text: 'Thankfully not into the gas pump behind the dangerous negr- I mean black man.'"
+            "\nScore: 0.2260"
+        )
+        st.write(
+            "The above text is clearly uncivil and should receive a much higher toxicity score. It is suspected that "
+            "this is not the case because the 'negr' term is not recognized by the model tokenizer. Even without the "
+            "slur, this sentence should have a higher toxicity score. More work is needed to improve the filter, and "
+            "they are outlined in the `Next Steps` section of this demo."
         )
 
     # Diversity
