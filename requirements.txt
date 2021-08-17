@@ -116,7 +116,6 @@ sentencepiece==0.1.96
 six==1.15.0
 smmap==4.0.0
 streamlit==0.86.0
-tensorboard==2.5.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
 tensorflow==2.5.0
