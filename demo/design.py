@@ -159,7 +159,7 @@ def design():
             "was filtered` section."
         )
         st.write(
-            "If the diversity filter is used, ... written by Sheen"
+            "If the diversity filter is used, the user can select one of two algorithms, Bounded Greedy Selection and Topic Diversification, to apply to the recommender system. Both of these algorithmically re-rank each comment to enhance diversity in the resulting recommendation set. This set is then compared to the original using a diversity metric and a percent change is displayed for performance evaluation."
         )
         st.write(
             "If the user wishes to apply both filters, comments provided by the recommender are suggested for use with "
