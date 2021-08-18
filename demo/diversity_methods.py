@@ -184,6 +184,7 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
             top_n = top_n.drop(index=item)
 
     # Step 3: Sort the remaining items in reverse (according to ILS rank) to get their dissimilarity rank.
+    # A low ILS score means a higher dissimilarity rank
     dissimilarity_rank = {k: v for k, v in sorted(ils.items(), key=lambda item: item[1], reverse=True)}
     
     # Step 4: Calculate new rank for each item as r = a ∗ P + b ∗ Pd, with P being the original rank, 
@@ -194,12 +195,12 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
     new_rank = {}
     dissimilarity_rank = OrderedDict(dissimilarity_rank)
     for item in df_ils.index:
-        P = C_prime.index[C_prime['comment'] == item]
-        Pd = list(dissimilarity_rank.keys()).index(item)
-        new_rank[item] = ((a * P) + (b * Pd))[0]
+        P = C_prime['similarity'][C_prime['comment'] == item].values[0]
+        Pd = dissimilarity_rank[item]
+        new_rank[item] = ((a * P) + (b * Pd))
     
     # Step 5: Select the top-N items according to the newly calculated rank
-    final_ranks = {k: v for k, v in sorted(new_rank.items(), key=lambda item: item[1], reverse=False)}
+    final_ranks = {k: v for k, v in sorted(new_rank.items(), key=lambda item: item[1], reverse=True)}
     
     data = []
     for comment, score in final_ranks.items():

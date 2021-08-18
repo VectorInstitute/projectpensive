@@ -163,7 +163,7 @@ def demo():
     popular_reddits = list(data.subreddit.value_counts().keys())[:100]
     subreddit = st.selectbox("Subreddit", popular_reddits)
     
-    num_posts = st.slider("How many posts do you want to see?", 5, 100, value=6)
+    num_posts = st.slider("How many posts do you want to see?", 5, 15, value=6)
     
     query = {
         "author": user_name,
@@ -176,11 +176,9 @@ def demo():
 
     if st.button('Generate Feed'):
         show_feed = True
-
-    if show_feed:
-        with st.spinner("Running Recommender Engine..."):
-            unaltered_feed = load_recommender_feed(query, data)
-            unaltered_feed = unaltered_feed.head(n=query["num_posts"])
+    
+    unaltered_feed = load_recommender_feed(query, data)
+    unaltered_feed = unaltered_feed.head(n=query["num_posts"])
     
     if civility_filter:
         civility_threshold = st.slider(
