@@ -36,7 +36,10 @@ def load_recommender_data():
 
 @st.cache(show_spinner=False)
 def load_recommender_feed(query, data):
-    model = RecommenderEngineRunner("../civility/recommender/final_model", data, 500)
+    # Num factors for model on cluster is 500, change if using new model
+    num_factors = 500
+
+    model = RecommenderEngineRunner("../civility/recommender/final_model", data, num_factors)
     unaltered_feed = model.run_model(query, data)
     return unaltered_feed
 
