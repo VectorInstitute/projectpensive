@@ -89,7 +89,7 @@ def design():
         apply the Word2Vec algorithm on interaction data by `treating subreddits as "words" and the users that comment 
         on them as "contexts"` - every instance of a user commenting in a subreddit then becomes a word-context, or 
         subreddit-user, pair. Then, two subreddits are similar if and only if many similar users have the time and 
-        interest to comment in them both [[2]](https://www.cs.toronto.edu/~ashton/pubs/cultural-dims2020.pdf).
+        interest to comment in them both. We would like to point out that this approach of `community embeddings` was inspired by the work Isaac Waller and Ashton Anderson from UofT [[2]](https://www.cs.toronto.edu/~ashton/pubs/cultural-dims2020.pdf).
         """)
         st.write("**Generating Comment Embeddings**")
         st.markdown("""
