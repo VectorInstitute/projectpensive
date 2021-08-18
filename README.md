@@ -51,3 +51,6 @@ To run the demo, do the following
 1. Make sure you have the necessary datasets and model checkpoints
 2. Traverse to demo folder: `cd demo`
 3. Run streamlit app: `streamlit run main.py`
+
+## References
+- sheen to add
