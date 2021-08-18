@@ -1,6 +1,7 @@
 import streamlit as st
 
-from helpers import load_recommender_data, load_recommender_feed, generate_feed, run_classifier, load_civility_data, load_data
+from helpers import load_recommender_data, load_recommender_feed, generate_feed, run_classifier, load_civility_data, \
+    load_data
 from diversity_methods import compare_diversity, compute_diversity, get_similar_comments, greedy_selection, \
     topic_diversification, get_similar_subreddits, calculate_subreddit_quality, subreddit_greedy_selection
 
@@ -59,7 +60,7 @@ def demo():
     st.markdown("#### Comment Recommender")
     diversity_algo_options = ("None", "Bounded Greedy Selection", "Topic Diversification")
     st.markdown(
-        "Using the HuggingFace Sentence Transformers Library, we generated embeddings for each comment. We then "
+        "Using the `Hugging Face Sentence Transformers` Library, we generated embeddings for each comment. We then "
         "implemented two diverity algorithms described below. Try out both and see how your recommendations change!"
     )
     with st.expander("1. Bounded Greedy Algorithm"):
