@@ -24,7 +24,7 @@ class CivilCommentsModel(pl.LightningModule):
         # Bert model
         self.bert = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=1)
 
-        # Model mods
+        # Model mods, freezing
         self.bert.dropout.p = 0
         self.bert.add_module(module=torch.nn.Sigmoid(), name="sigmoid")
         for param in self.bert.base_model.parameters():

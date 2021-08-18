@@ -10,9 +10,6 @@
 #SBATCH --output=output.log
 #SBATCH --gres=gpu:4
 
-
-. /etc/profile.d/lmod.sh
-
 echo Activating conda environment
 source /scratch/ssd002/datasets/cv_project/baiso_env/bin/activate
 

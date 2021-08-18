@@ -28,17 +28,21 @@ class CivilCommentsDataset(torch.utils.data.Dataset):
 
         civil_idx = []
         uncivil_idx = []
-        num_civil = self.num_data_points / 2
-        num_uncivil = self.num_data_points / 2
+        num_civil = self.num_data_points // 2
+        num_uncivil = self.num_data_points // 2
 
+        # Balancing the dataset by grabbing self.num_data_points // 2 civil and uncivil data points
         for i, data in enumerate(self.dataset):
+            # If civil data point and civil_idx is not full
             if data["toxicity"] < 0.5 and num_civil > 0:
                 civil_idx.append(i)
                 num_civil -= 1
+            # If uncivil and uncivil_idx is not full
             elif data["toxicity"] > 0.5 and num_uncivil > 0:
                 uncivil_idx.append(i)
                 num_uncivil -= 1
 
+            # If both lists are full, exit
             if num_civil == 0 and num_uncivil == 0:
                 break
 
