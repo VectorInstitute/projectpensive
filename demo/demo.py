@@ -30,23 +30,27 @@ def demo():
     text_input = st.text_input(label="Provide a comment to compute its toxicity score...")
     if text_input not in ["Provide a comment to compute its toxicity score...", ""]:
         with st.spinner("Computing..."):
-            output = run_classifier(text_input)
-            output = max(0, output)
-            output = min(output, 1)
-            if output > 0.5:
-                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            type_output = run_classifier(text_input)
+            type_output = max(0, type_output)
+            type_output = min(type_output, 1)
+            if type_output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {type_output:.3f}.")
             else:
-                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+                st.write(f"This comment is considered **civil**, with a toxicity score of {type_output:.3f}.")
 
     civil_dataset_options = load_civility_data()
-    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options)
-    if select_text:
+    civil_dataset_options = civil_dataset_options.to_list()
+    civil_dataset_options.insert(0, None)
+    select_text = st.selectbox("Select a phrase to compute its toxicity score...", civil_dataset_options, )
+    if select_text is not None:
         with st.spinner("Computing..."):
-            output = run_classifier(text_input)
-            if output > 0.5:
-                st.write(f"This comment is considered **uncivil**, with a toxicity score of {output:.3f}.")
+            select_output = run_classifier(select_text)
+            select_output = max(0, select_output)
+            select_output = min(select_output, 1)
+            if select_output > 0.5:
+                st.write(f"This comment is considered **uncivil**, with a toxicity score of {select_output:.3f}.")
             else:
-                st.write(f"This comment is considered **civil**, with a toxicity score of {output:.3f}.")
+                st.write(f"This comment is considered **civil**, with a toxicity score of {select_output:.3f}.")
                 
     # Diversity Filter
     st.subheader("Diversity Filter")
@@ -90,8 +94,9 @@ def demo():
             here, we apply it to Reddit comments. We first generate recommended items for the target query (at least 
             5N for the top-N final recommendations). For each N+1 position item, we calculate the ILS (intralist 
             similarity) if this item was part of the top-N list. Then we sort the remaining items in reverse (according
-             to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as defined in the equation below, with P being the original rank, Pd being the dissimilarity rank and a, b being constants in range 
-             [0, 1]. Lastly, we select the top-N items according to the newly calculated rank."""
+             to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as defined in 
+             the equation below, with P being the original rank, Pd being the dissimilarity rank and a, b being 
+             constants in range [0, 1]. Lastly, we select the top-N items according to the newly calculated rank."""
         )
         st.latex(r''' 
         r = (a * P) + (b * P_d), \quad a,b \in [0,1]
