@@ -56,13 +56,16 @@ def evaluation():
             "Low Toxicity Example"
             "\n\tText: 'Well, at least the democratic nomination race will be over Tuesday.'"
             "\n\tScore: 0.0000"
+            "\n\tJigsaw Score: 0.0957"
             "\nMedium Toxicity Example"
             "\n\tText: 'They forgot to add the major fuck ups, blow its, and legal troubles that have plagued the "
             "conman for decades.-- Whats up with that?'"
             "\n\tScore: 0.4630"
+            "\n\tJigsaw Score: 0.8061"
             "\nHigh Toxicity Example"
             "\n\tText: 'Oh bully, its really a shame that not more parties in Germany a racist shitfests'"
             "\n\tScore: 0.6410"
+            "\n\tJigsaw Score: 0.8998"
         )
 
         st.write("Below is an interesting (and concerning) edge case.")
