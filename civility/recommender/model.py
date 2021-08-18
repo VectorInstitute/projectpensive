@@ -1,5 +1,4 @@
 import torch
-from transformers import BertTokenizer, BertModel
 
 
 class RecommenderEngine(torch.nn.Module):
@@ -30,13 +29,7 @@ class RecommenderEngine(torch.nn.Module):
         )
         self.subreddit_linear = torch.nn.Linear(n_factors // 2, 100 // 2)
 
-        # Comment embeddings
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.bert = BertModel.from_pretrained('bert-base-uncased').to(self.device)
-        self.bert_output_dim = 768
-        for _, param in self.bert.named_parameters():
-            param.requires_grad = False
-
+        # Text embeddings
         self.text_lookup = {comment: i for i, comment in enumerate(self.data.comment.unique())}
         self.text_embedding = torch.nn.Embedding(
             len(self.text_lookup),
@@ -44,6 +37,7 @@ class RecommenderEngine(torch.nn.Module):
         )
         self.text_linear = torch.nn.Linear(n_factors, 100)
 
+        # Linear layers
         self.linear_1 = torch.nn.Linear(100, 20)
         self.relu_1 = torch.nn.ReLU()
         self.linear_2 = torch.nn.Linear(20, 1)

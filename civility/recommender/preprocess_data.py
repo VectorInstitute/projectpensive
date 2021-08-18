@@ -1,3 +1,8 @@
+"""
+Used to preprocess the `Sarcastic Comments - REDDIT` dataset. Removes short comments and comments given by a user who
+does not show up often in the dataset.
+"""
+
 import pandas as pd
 
 
@@ -18,7 +23,7 @@ if __name__ == "__main__":
     data = data.drop(ids_to_drop)
     data = data.reset_index(drop=True)
 
-    # Remove data points where the author makes less than 4 comments in the dataset
+    # Remove data points where the author makes less than 7 comments in the dataset
     good_authors = []
     author_value_counts = data.author.value_counts() > 7
     for author, condition in author_value_counts.items():

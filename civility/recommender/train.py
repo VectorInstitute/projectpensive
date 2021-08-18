@@ -24,9 +24,9 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # Define model
-    model = RecommenderEngine(data, n_factors=300, device=device)
+    model = RecommenderEngine(data, n_factors=500, device=device)
     loss_fn = torch.nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-6)
 
     # Training loop
     num_epochs = 10
@@ -63,15 +63,16 @@ if __name__ == "__main__":
                 prediction.data.cpu() > 0.5, batch["match_score"].cpu(), warn_for=tuple()
             )
 
-            losses.append(loss)
-            f1s.append(metrics[2][0])
-            precisions.append(metrics[0][0])
-            recalls.append(metrics[1][0])
-
             # Back propagate
             loss.backward()
             optimizer.step()
 
+            losses.append(loss.item())
+            f1s.append(metrics[2][0])
+            precisions.append(metrics[0][0])
+            recalls.append(metrics[1][0])
+
+            # Print metrics
             if b % 50 == 0:
                 loss_avg = torch.mean(torch.Tensor(losses))
                 f1_avg = torch.mean(torch.Tensor(f1s))

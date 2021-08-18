@@ -20,11 +20,12 @@ class SarcasticDataset(torch.utils.data.Dataset):
         item["subreddit"].append(item["subreddit"][0])
         item["match_score"].append(0)
 
+        # Adding comment metadata
         for key in item.keys():
             if key in ["author", "subreddit", "match_score"]:
                 continue
 
-            if type(item[key]) != torch.Tensor:
+            if not isinstance(item[key], torch.Tensor):
                 item[key].append(self.data.iloc[rand_wrong_idx][key])
             else:
                 item[key] = torch.cat((item[key], self.data.iloc[rand_wrong_idx][key]))
