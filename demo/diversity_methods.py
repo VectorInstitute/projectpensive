@@ -211,7 +211,7 @@ def topic_diversification(embedder, dataset, corpus, sarcasm_embeddings, query, 
     for item in df_sim['comment']:
         ils_rank.append(dissimilarity_rank[item])
 
-    df_sim['ILS score'] = ils_rank
+    df_sim['ils_score'] = ils_rank
     df_sim = df_sim.sort_values(by=['rank'], ascending=False)
     df_sim = df_sim.head(n)
     df = df_sim.copy()

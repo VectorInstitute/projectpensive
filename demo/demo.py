@@ -232,9 +232,9 @@ def demo():
                     ["comment", "parent_comment", "author", "subreddit", "similarity", "toxicity_score"]
                 ]
             else:
-                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS score", "toxicity_score"]]
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ils_score", "toxicity_score"]]
                 removed_from_feed = removed_from_feed[
-                    ["comment", "parent_comment", "author", "subreddit", "rank", "ILS score", "toxicity_score"]
+                    ["comment", "parent_comment", "author", "subreddit", "rank", "ils_score", "toxicity_score"]
                 ]
         elif civility_filter:
             with st.spinner("Generating civil feed..."):
@@ -274,7 +274,7 @@ def demo():
             elif selected_algo == diversity_algo_options[1]:
                 feed = feed[["comment", "parent_comment", "author", "subreddit", "similarity"]]
             else:
-                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ILS score"]]
+                feed = feed[["comment", "parent_comment", "author", "subreddit", "rank", "ils_score"]]
         else:
             with st.spinner("Generating feed..."):
                 feed = generate_feed(
