@@ -53,4 +53,6 @@ To run the demo, do the following
 3. Run streamlit app: `streamlit run main.py`
 
 ## References
-- sheen to add
+1. [Improving Recommendation Diversity](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.8.5232&rep=rep1&type=pdf) (2001, Keith Bradley and Barry Smyth)
+2. [Improving Recommendation Lists Through Topic Diversification](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.62.9683&rep=rep1&type=pdf) (2005, Cai-Nicolas Ziegler et al.)
+3. [Enhancing Diversity-Accuracy Technique on User-Based Top-N Recommendation Algorithms](https://sci-hub.se/https://ieeexplore.ieee.org/document/6605824/references#references) (2013, Wichian Premchaiswadi et al.)
