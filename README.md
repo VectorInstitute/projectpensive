@@ -4,7 +4,7 @@ The goal of Project Pensive is to build better Recommender Engines that incorpor
 content quality and user experience.
 
 To get started:
-1. Clone this repo: `git clone https://github.com/VectorInstitute/baiso.git`
+1. Clone this repo: `git clone https://github.com/VectorInstitute/projectpensive.git`
 2. Install code packages: `python setup.py install`
 3. Install package dependencies: `pip install -r requirements.txt`
 
