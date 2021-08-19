@@ -166,7 +166,7 @@ def design():
     st.subheader("Component Interaction")
     with st.expander("Read more"):
         col1, col2, col3 = st.columns([0.5, 1, 0.5])
-        st.image("images/workflow.png")
+        st.image("images/workflow.png", width=500)
         st.write(
             "Before any filters are applied, it is the recommender's job to analyze thousands of comments and rank "
             "them based on their match to the input query. Once this is done, our filters can be applied. The "
