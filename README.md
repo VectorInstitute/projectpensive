@@ -10,7 +10,7 @@ To get started:
 
 Notes: 
 1. This is a one-off demo, the code repository will not be maintained.
-2. This code was written with a  Python 3.7 interpreter. It is recommender to use Python 3.7 or newer.
+2. This code was written with a  Python 3.7 interpreter. It is recommended to use Python 3.7 or newer.
 
 
 ## External to Vector
