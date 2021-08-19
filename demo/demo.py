@@ -88,7 +88,7 @@ def demo():
             \end{array}
         \right.
         ''')
-        col1, col2, col3 = st.columns([0.6,1,0.6])
+        col1, col2, col3 = st.columns([0.75,1,0.75])
         col2.image("images/greedy_pseudo.png")
     
     with st.expander("2. Topic Diversification Algorithm"):
@@ -107,7 +107,7 @@ def demo():
         st.latex(r''' 
         r = (a * P) + (b * P_d), \quad a,b \in [0,1]
         ''')
-        col1, col2, col3 = st.columns([0.6,1,0.6])
+        col1, col2, col3 = st.columns([0.75,1,0.75])
         col2.image("images/topic_pseudo.png")
         
     embedder, dataset, corpus, sarcasm_embeddings, subreddit_embeddings = load_data()
