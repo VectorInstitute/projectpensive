@@ -188,4 +188,4 @@ def design():
             "by the civility filter as they normally would."
         )
         col1, col2, col3 = st.columns([0.05, 1, 0.05])
-        col2.image("images/workflow.png", width=800)
+        col2.image("images/workflow.png", width=1000)
