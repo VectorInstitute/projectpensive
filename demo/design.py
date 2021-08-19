@@ -165,8 +165,6 @@ def design():
     # Component Interaction
     st.subheader("Component Interaction")
     with st.expander("Read more"):
-        col1, col2, col3 = st.columns([0.5, 1, 0.5])
-        col2.image("images/workflow.png", width=550)
         st.write(
             "Before any filters are applied, it is the recommender's job to analyze thousands of comments and rank "
             "them based on their match to the input query. Once this is done, our filters can be applied. The "
@@ -189,3 +187,5 @@ def design():
             "the diversity filter. The diversity filter provides a sequence of diverse posts, which are then processed "
             "by the civility filter as they normally would."
         )
+        col1, col2, col3 = st.columns([0.5, 1, 0.5])
+        col2.image("images/workflow.png", width=560)
