@@ -17,11 +17,11 @@ Notes:
 ### Data Download
 To run any training programs or demos, you will need to download the data. Assuming you have a Kaggle account, go to 
 [the dataset](https://www.kaggle.com/sherinclaudia/sarcastic-comments-on-reddit) and download the zip file. Unzip and 
-move the csv file to `baiso/civility/recommender/train-balanced-sarcasm.csv`. Once this is done, traverse to 
-`baiso/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
+move the csv file to `projectpensive/civility/recommender/train-balanced-sarcasm.csv`. Once this is done, traverse to 
+`projectpensive/civility/recommender` and run `python preprocess_data.py`. If done correctly, you will have all data you need
 to run experiments and the demo. Another dataset that needs to be downloaded can be found 
 [here](https://www.kaggle.com/timschaum/subreddit-recommender). Unzip this file, create a folder under diversity `diversity/datasets` and add the file there as
-`baiso/diversity/datasets/reddit_user_data_count.csv`. Follow the instructions under the Diversity Filter section below to 
+`projectpensive/diversity/datasets/reddit_user_data_count.csv`. Follow the instructions under the Diversity Filter section below to 
 correctly preprocess the data.
 
 #### Model Checkpoints
@@ -32,14 +32,14 @@ You will need to train the filters yourself (see Civility Filter and Recommender
 precomputed embeddings for the diversity filter, see the Diversity Filter section.
 
 #### Civility Filter
-Code for the civility filter can be found under `baiso/civility/classifier`. To train a model, run `python train.py`.  
+Code for the civility filter can be found under `projectpensive/civility/classifier`. To train a model, run `python train.py`.  
 
 #### Diversity Filter
-Code for the diversity filter can be found under `baiso/diversity`. To generate subreddit embeddings, go to 
+Code for the diversity filter can be found under `projectpensive/diversity`. To generate subreddit embeddings, go to 
 `basio/diversity/embeddings` and run the `subreddit2vec.ipynb` file. Once you have generated the `vectors.tsv` and `metadata.tsv` files and ensured that they are in the `datasets` folder, run `basio/diversity/generate-subreddit-dataframe.py`. To generate comment embeddings, run the `generate-comment-embeddings.py` file.
 
 #### Recommender Engine
-Code for the recommender engine can be found under `baiso/civility/recommender`. To train a recommender, run 
+Code for the recommender engine can be found under `projectpensive/civility/recommender`. To train a recommender, run 
 `python train.py`
 
 
