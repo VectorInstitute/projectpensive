@@ -172,7 +172,7 @@ def demo():
     popular_reddits = list(data.subreddit.value_counts().keys())[:100]
     subreddit = st.selectbox("Subreddit", popular_reddits)
     
-    num_posts = st.slider("How many posts do you want to see?", 5, 50, value=20)
+    num_posts = st.slider("How many posts do you want to see?", 5, 50, value=10)
     
     query = {
         "author": user_name,
