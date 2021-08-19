@@ -73,7 +73,7 @@ def demo():
             items selected during the previous iteration.  
             To reduce the complexity, we implemented a bounded version in which we first select the top k items 
             according to their similarity to the target query and apply the Greedy Selection method to these.  
-            Reference: [*Improving Recommendation Diversity*](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.8.5232&rep=rep1&type=pdf) *(2001, Keith Bradley and Barry Smyth)*
+            *Reference:* [*Improving Recommendation Diversity*](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.8.5232&rep=rep1&type=pdf) *(2001, Keith Bradley and Barry Smyth)*
             """
         )
         st.latex(r''' 
@@ -100,7 +100,7 @@ def demo():
              to the ILS rank) to get their dissimilarity rank. We calculate the new rank for each item as defined in 
              the equation below, with P being the original rank, Pd being the dissimilarity rank and a, b being 
              constants in range [0, 1]. Lastly, we select the top-N items according to the newly calculated rank.  
-             Reference: [*Improving Recommendation Lists Through Topic Diversification*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.62.9683&rep=rep1&type=pdf) *(2005, Cai-Nicolas Ziegler et al.)*
+             *Reference:* [*Improving Recommendation Lists Through Topic Diversification*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.62.9683&rep=rep1&type=pdf) *(2005, Cai-Nicolas Ziegler et al.)*
              """
         )
         st.latex(r''' 
