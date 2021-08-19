@@ -187,5 +187,5 @@ def design():
             "the diversity filter. The diversity filter provides a sequence of diverse posts, which are then processed "
             "by the civility filter as they normally would."
         )
-        col1, col2, col3 = st.columns([0.3, 1, 0.3])
-        col2.image("images/workflow.png", width=660)
+        col1, col2, col3 = st.columns([0.05, 1, 0.05])
+        col2.image("images/workflow.png", width=800)
