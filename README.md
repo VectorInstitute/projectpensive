@@ -3,6 +3,8 @@ Project Pensive is open source software that leverages the latest AI research to
 The goal of Project Pensive is to build better Recommender Engines that incorporate content conscious filters to improve
 content quality and user experience.
 
+See also the project <a href="https://docs.google.com/document/d/183vqr8mFDhFE92pTfXzVoYuNUEMev0PG8RbYa9TZvdc/edit">charter</a> and <a href="https://docs.google.com/document/d/10L_s9FlOrmwOYsUlRg2WE5d8SxivJfP55Y8PTinYH4A/edit#heading=h.3kadlhlnhygj">technical agenda</a>
+
 To get started:
 1. Clone this repo: `git clone https://github.com/VectorInstitute/projectpensive.git`
 2. Install code packages: `python setup.py install`
