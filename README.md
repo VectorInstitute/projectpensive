@@ -62,10 +62,10 @@ To run the demo, do the following
 3. [Enhancing Diversity-Accuracy Technique on User-Based Top-N Recommendation Algorithms](https://sci-hub.se/https://ieeexplore.ieee.org/document/6605824/references#references) (2013, Wichian Premchaiswadi et al.)
 
 ## Contributing
-There is no active support or development for this repository.
+There is no active support for this repository.
 
 ## The Team
-This was work done by Michael Laurent Nasello and Sheen Thusoo during their summer 2021 internship at the Vector Institute.
+This was work done by Michael Laurent Nasello and Sheen Thusoo during their summer 2021 internship at the Vector Institute with help from Ron Bodkin and Shems Saleh(during her time here at Vector).
 
 ## License
 This repo has a MIT-style licence, as found in [LICENSE](LICENSE) file.
